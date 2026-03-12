@@ -1,10 +1,7 @@
 ---
-toc: false
-layout: post
-title: "RCR: Poway-Midland Railroad Digital Experience"
-description: "A Design-Based Research capstone by RCR team modernizing the Poway-Midland Railroad website with interactive features, real-time data systems, and enhanced user experiences for visitors and volunteers — transforming a static historical site into a dynamic digital destination."
-permalink: /capstone/rcr-poway-midland-railroad/
-sticky_rank: 1
+layout: base
+title: Train Schedule & Tracker
+permalink: /railroad/schedule
 ---
 
 <style>
@@ -298,26 +295,82 @@ sticky_rank: 1
   }
   setInterval(rrClock,1000); rrClock();
 
-  const RR_STOPS = ['Main Station','Halfway Point','North Curve','Park Loop','Return'];
+  const RR_STOPS = ['Depot Station','Oak Grove','Midland Curve','Park Loop','Return to Depot'];
+
+  // Real Poway-Midland Railroad schedule data
+  // Source: powaymidlandrr.org/visit/
+  // Saturdays: Steam Locomotive 10am-2pm (max 65 riders)
+  // Sundays: Cable Car or Speeder 11am-2pm (max 30 riders)
+  // Last ride: 15 min before closing = 1:45pm
+  // 2nd Sunday each month: NO OPERATION
+
+  function getTodaySchedule() {
+    const now  = new Date();
+    const dow  = now.getDay(); // 0=Sun, 6=Sat
+    const date = now.getDate();
+
+    // Check if 2nd Sunday (no operation)
+    const isSecondSunday = dow === 0 && date >= 8 && date <= 14;
+
+    if (dow === 6) {
+      // Saturday — Steam Locomotive, rides every ~15 min, 10am-1:45pm
+      return {
+        type: 'Steam Locomotive 🚂',
+        times: [{h:10,m:0},{h:10,m:15},{h:10,m:30},{h:10,m:45},
+                {h:11,m:0},{h:11,m:15},{h:11,m:30},{h:11,m:45},
+                {h:12,m:0},{h:12,m:15},{h:12,m:30},{h:12,m:45},
+                {h:13,m:0},{h:13,m:15},{h:13,m:30},{h:13,m:45}],
+        totalSeats: 65,
+        open: true
+      };
+    } else if (dow === 0 && !isSecondSunday) {
+      // Sunday (not 2nd) — Cable Car or Speeder, 11am-1:45pm
+      // Alternate by week: odd weeks = Cable Car, even weeks = Speeder
+      const weekNum = Math.ceil(date / 7);
+      const isSpeeder = weekNum % 2 === 0;
+      return {
+        type: isSpeeder ? 'Speeder w/ Ore Cars 🚃' : 'Cable Car 🚌',
+        times: [{h:11,m:0},{h:11,m:20},{h:11,m:40},
+                {h:12,m:0},{h:12,m:20},{h:12,m:40},
+                {h:13,m:0},{h:13,m:20},{h:13,m:45}],
+        totalSeats: 30,
+        open: true
+      };
+    } else {
+      // Weekday or 2nd Sunday — no operation
+      return { type: null, times: [], totalSeats: 0, open: false };
+    }
+  }
 
   function getMockSchedule() {
-    const now = new Date();
-    const times = [{h:10,m:0},{h:10,m:45},{h:11,m:30},{h:12,m:15},{h:13,m:0},{h:13,m:45},{h:14,m:30},{h:15,m:15},{h:16,m:0}];
-    return times.map((t,i) => {
-      const dep = new Date(now); dep.setHours(t.h,t.m,0,0);
-      const diff = Math.round((dep-now)/60000), total = 30;
+    const now      = new Date();
+    const schedule = getTodaySchedule();
+
+    if (!schedule.open) return [];
+
+    return schedule.times.map((t, i) => {
+      const dep  = new Date(now); dep.setHours(t.h, t.m, 0, 0);
+      const diff = Math.round((dep - now) / 60000);
+      const total = schedule.totalSeats;
       let taken, status;
-      if      (diff<-20) { status='full';     taken=total; }
-      else if (diff<0)   { status='boarding'; taken=Math.floor(Math.random()*8)+20; }
-      else if (i===3)    { status='delayed';  taken=Math.floor(Math.random()*15)+5; }
-      else               { status='ontime';   taken=Math.floor(Math.random()*20)+2; }
-      return { time:`${String(t.h).padStart(2,'0')}:${String(t.m).padStart(2,'0')}`, h:t.h, diff, status, seats:total-taken, total, taken, delay:status==='delayed'?10:0 };
+      if      (diff < -15) { status='full';     taken=total; }
+      else if (diff < 0)   { status='boarding'; taken=Math.floor(Math.random()*Math.floor(total*0.3))+Math.floor(total*0.6); }
+      else                 { status='ontime';   taken=Math.floor(Math.random()*Math.floor(total*0.5)); }
+      return {
+        time: `${String(t.h).padStart(2,'0')}:${String(t.m).padStart(2,'0')}`,
+        h: t.h, diff, status,
+        seats: total - taken, total, taken,
+        delay: 0,
+        trainType: schedule.type
+      };
     });
   }
 
   function getMockTracker() {
+    const schedule = getTodaySchedule();
+    if (!schedule.open) return { open: false };
     const p=(Math.sin(Date.now()/30000)+1)/2, si=Math.min(Math.floor(p*RR_STOPS.length),RR_STOPS.length-1), moving=Math.random()>0.2;
-    return { p, si, moving, speed:moving?Math.round(8+Math.random()*6):0, eta:moving?Math.round((1-p)*12+2):'—' };
+    return { open:true, p, si, moving, speed:moving?Math.round(8+Math.random()*6):0, eta:moving?Math.round((1-p)*12+2):'—' };
   }
 
   const SC = {
