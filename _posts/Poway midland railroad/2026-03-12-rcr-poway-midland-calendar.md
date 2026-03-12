@@ -168,31 +168,36 @@ permalink: /railroad/calendar
 
   function calInit() {
     const now = new Date();
-    calYear = now.getFullYear(); calMonth = now.getMonth();
+    calYear = now.getFullYear();
+    calMonth = now.getMonth();
     calRender();
   }
 
   function calChangeMonth(delta) {
     calMonth += delta;
-    if (calMonth > 11) { calMonth=0; calYear++; }
-    if (calMonth < 0)  { calMonth=11; calYear--; }
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
     calRender();
   }
 
   function calGoToday() {
-    const now = new Date(); calYear=now.getFullYear(); calMonth=now.getMonth(); calRender();
+    const now = new Date();
+    calYear = now.getFullYear();
+    calMonth = now.getMonth();
+    calRender();
   }
 
   function getEventForDate(y, m, d) {
     const key = `${y}-${m+1}-${d}`;
     if (RR_SCHEDULE[key]) return RR_SCHEDULE[key];
     const dow = new Date(y, m, d).getDay();
-    if (dow === 6) return 'steam'; // default Saturday
+    if (dow === 6) return 'steam';
     return null;
   }
 
   function calRender() {
     const today = new Date();
+    today.setHours(0,0,0,0);
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     document.getElementById('calMonthTitle').textContent = `${months[calMonth]} ${calYear}`;
 
@@ -211,40 +216,45 @@ permalink: /railroad/calendar
       grid.appendChild(cell);
     }
 
-    // Current month
+    // Current month days
     for (let d = 1; d <= daysInMonth; d++) {
-      const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
-      const isPast  = new Date(calYear, calMonth, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const cellDate = new Date(calYear, calMonth, d);
+      cellDate.setHours(0,0,0,0);
+      const isToday = cellDate.getTime() === today.getTime();
+      const isPast  = cellDate < today;
       const event   = getEventForDate(calYear, calMonth, d);
       const isOp    = event && event !== 'none';
 
-      const cell = document.createElement('div');
-      let cls = 'cal-cell';
-      if (isToday) cls += ' today';
-      if (isPast)  cls += ' past';
-      if (isOp && !isPast) cls += ' clickable';
-      cell.className = cls;
-
-      // Format date string for URL: YYYY-MM-DD
       const mm = String(calMonth+1).padStart(2,'0');
       const dd = String(d).padStart(2,'0');
       const dateStr = `${calYear}-${mm}-${dd}`;
 
-      cell.innerHTML = `<div class="cal-date-num">${d}</div>`;
+      // Build cell entirely in HTML first, then attach listener
+      let cls = 'cal-cell';
+      if (isToday) cls += ' today';
+      if (isPast && !isToday) cls += ' past';
+      if (isOp && !isPast) cls += ' clickable';
 
+      let inner = `<div class="cal-date-num">${d}</div>`;
       if (event) {
         const cfg = EVENT_CONFIG[event];
-        cell.innerHTML += `
-          <div class="cal-event ${cfg.cls}">
-            ${cfg.label}
-            ${cfg.time ? `<div class="cal-event-time">${cfg.time}</div>` : ''}
-          </div>`;
+        inner += `<div class="cal-event ${cfg.cls}">${cfg.label}`;
+        if (cfg.time) inner += `<div class="cal-event-time">${cfg.time}</div>`;
+        inner += `</div>`;
         if (isOp && !isPast) {
-          cell.innerHTML += `<div class="cal-click-hint">View schedule →</div>`;
-          cell.addEventListener('click', () => {
-            window.location.href = `/railroad/schedule?date=${dateStr}`;
-          });
+          inner += `<div class="cal-click-hint">View schedule →</div>`;
         }
+      }
+
+      const cell = document.createElement('div');
+      cell.className = cls;
+      cell.innerHTML = inner;
+
+      // Attach click AFTER innerHTML is fully set — avoids listener being wiped
+      if (isOp && !isPast) {
+        cell.addEventListener('click', () => {
+          window.location.href = `/railroad/schedule?date=${dateStr}`;
+        });
       }
 
       grid.appendChild(cell);
