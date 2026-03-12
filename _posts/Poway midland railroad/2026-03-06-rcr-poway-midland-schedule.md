@@ -226,9 +226,12 @@ permalink: /railroad/schedule
         <div class="rr-subtitle">Old Poway Park · Schedule &amp; Live Tracker</div>
       </div>
     </div>
-    <div class="rr-clock">
-      <div class="time" id="rrTime">--:--:--</div>
-      <div class="date" id="rrDate">---</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="/railroad/calendar" title="View Operations Calendar" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:rgba(201,148,58,0.15);border:1px solid #c9943a;font-size:22px;text-decoration:none;flex-shrink:0;">📅</a>
+      <div class="rr-clock">
+        <div class="time" id="rrTime">--:--:--</div>
+        <div class="date" id="rrDate">---</div>
+      </div>
     </div>
   </div>
 
@@ -418,20 +421,32 @@ permalink: /railroad/schedule
   }
 
   function rrRenderTracker() {
-    const t=getMockTracker(), stopsEl=document.getElementById('rrStops');
-    stopsEl.innerHTML='';
+    const t = getMockTracker();
+    if (!t.open) {
+      document.getElementById('rrLoc').textContent     = 'No Service';
+      document.getElementById('rrLocSub').textContent  = 'Not operating today';
+      document.getElementById('rrStat').textContent    = 'Offline';
+      document.getElementById('rrStatSub').textContent = '—';
+      document.getElementById('rrETA').textContent     = '—';
+      document.getElementById('rrSpeed').textContent   = '0';
+      document.getElementById('rrTrainIcon').style.left = '6%';
+      document.getElementById('rrStops').innerHTML = '';
+      return;
+    }
+    const stopsEl = document.getElementById('rrStops');
+    stopsEl.innerHTML = '';
     RR_STOPS.forEach((s,i) => {
-      const d=document.createElement('div'); d.className='rr-stop';
+      const d = document.createElement('div'); d.className='rr-stop';
       d.innerHTML=`<div class="rr-stop-dot ${i<t.si?'passed':i===t.si?'active':''}"></div><div class="rr-stop-name ${i===t.si?'active-name':''}">${s}</div>`;
       stopsEl.appendChild(d);
     });
-    document.getElementById('rrTrainIcon').style.left=(Math.round(t.p*88)+6)+'%';
-    document.getElementById('rrLoc').textContent=RR_STOPS[t.si];
-    document.getElementById('rrLocSub').textContent=t.si===0?'At station':t.si===RR_STOPS.length-1?'Final stop':'In transit';
-    document.getElementById('rrStat').textContent=t.moving?'Moving':'Stopped';
-    document.getElementById('rrStatSub').textContent=t.moving?'En route':'At platform';
-    document.getElementById('rrETA').textContent=t.eta==='—'?'—':`~${t.eta} min`;
-    document.getElementById('rrSpeed').textContent=t.speed;
+    document.getElementById('rrTrainIcon').style.left  = (Math.round(t.p*88)+6)+'%';
+    document.getElementById('rrLoc').textContent       = RR_STOPS[t.si];
+    document.getElementById('rrLocSub').textContent    = t.si===0?'At depot':t.si===RR_STOPS.length-1?'Returning to depot':'In transit';
+    document.getElementById('rrStat').textContent      = t.moving?'Moving':'Stopped';
+    document.getElementById('rrStatSub').textContent   = t.moving?'En route':'At platform';
+    document.getElementById('rrETA').textContent       = t.eta==='—'?'—':`~${t.eta} min`;
+    document.getElementById('rrSpeed').textContent     = t.speed;
   }
 
   function rrRefresh() {
