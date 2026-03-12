@@ -122,6 +122,7 @@ permalink: /railroad/book
       <div class="bk-detail"><strong id="bkDuration">~10–15 min</strong>Ride Duration</div>
       <div class="bk-detail"><strong>Old Poway Park</strong>Location</div>
       <div class="bk-detail"><strong id="bkFareAdult">$5.00</strong>Adult Fare</div>
+      <div class="bk-detail"><strong id="bkSeatsAvail" style="color:#2d6a4f;">—</strong>Seats Available</div>
       <div class="bk-detail"><strong>$2.00</strong>Child Fare (2–12)</div>
     </div>
   </div>
@@ -197,6 +198,9 @@ permalink: /railroad/book
       <div class="bk-total-amt" id="bkGrandTotal">$5.00</div>
     </div>
 
+    <div id="bkSeatWarning" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:13px;color:#c0392b;font-weight:600;">
+      ⚠️ Not enough seats available. Only <span id="bkMaxMsg"></span> seat(s) remaining for this ride.
+    </div>
     <button class="bk-submit" id="bkSubmitBtn" onclick="bkSubmit()">🎟 Confirm Booking</button>
     <p class="bk-note">Tickets are not pre-purchased online. This reserves your spot and you pay at the depot on the day of your ride. Cash and credit cards accepted.</p>
   </div>
@@ -217,6 +221,7 @@ permalink: /railroad/book
   let bkAdult = 1, bkChild = 0, bkInfant = 0;
   let bkAdultPrice = 5;
   let bkRideDate = '', bkRideTime = '', bkRideType = '';
+  let bkMaxSeats = 99; // set from URL param, enforced in bkChange()
 
   function bkInit() {
     const params = new URLSearchParams(window.location.search);
@@ -239,6 +244,17 @@ permalink: /railroad/book
       document.getElementById('bkDate').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
     }
 
+    // Read available seats from URL, show in ride card
+    const seatsParam = parseInt(params.get('seats'));
+    if (!isNaN(seatsParam)) {
+      bkMaxSeats = seatsParam;
+    }
+    const seatsInfoEl = document.getElementById('bkSeatsAvail');
+    if (seatsInfoEl) {
+      seatsInfoEl.textContent = bkMaxSeats >= 99 ? 'Loading...' : `${bkMaxSeats} seat${bkMaxSeats!==1?'s':''} available`;
+      seatsInfoEl.style.color = bkMaxSeats <= 3 ? '#c0392b' : '#2d6a4f';
+    }
+
     // Speeder is $4 adult
     if (bkRideType.includes('Speeder')) {
       bkAdultPrice = 4;
@@ -250,10 +266,30 @@ permalink: /railroad/book
   }
 
   function bkChange(type, delta) {
-    if (type === 'adult')  { bkAdult  = Math.max(1, bkAdult  + delta); }
-    if (type === 'child')  { bkChild  = Math.max(0, bkChild  + delta); }
-    if (type === 'infant') { bkInfant = Math.max(0, bkInfant + delta); }
+    const totalPaid = bkAdult + bkChild; // infants are free and don't take seats
+    if (type === 'adult') {
+      const next = bkAdult + delta;
+      if (next < 1) return;
+      if (delta > 0 && totalPaid >= bkMaxSeats) { bkShowSeatWarning(); return; }
+      bkAdult = next;
+    }
+    if (type === 'child') {
+      const next = bkChild + delta;
+      if (next < 0) return;
+      if (delta > 0 && totalPaid >= bkMaxSeats) { bkShowSeatWarning(); return; }
+      bkChild = next;
+    }
+    if (type === 'infant') {
+      bkInfant = Math.max(0, bkInfant + delta);
+    }
     bkUpdateTotals();
+  }
+
+  function bkShowSeatWarning() {
+    const w = document.getElementById('bkSeatWarning');
+    const msg = document.getElementById('bkMaxMsg');
+    if (msg) msg.textContent = bkMaxSeats;
+    if (w) { w.style.display='block'; setTimeout(()=>{ w.style.display='none'; }, 3000); }
   }
 
   function bkUpdateTotals() {
@@ -274,6 +310,11 @@ permalink: /railroad/book
     const email = document.getElementById('bkEmail').value.trim();
     const phone = document.getElementById('bkPhone').value.trim();
 
+    const totalTickets = bkAdult + bkChild;
+    if (totalTickets > bkMaxSeats) {
+      alert(`Only ${bkMaxSeats} seat(s) available for this ride. Please reduce your ticket count.`);
+      return;
+    }
     if (!first || !last || !email || !phone) {
       alert('Please fill in all passenger information fields.');
       return;

@@ -149,8 +149,19 @@ permalink: /railroad/schedule
 
   <!-- Date Switcher -->
   <div class="rr-date-switcher">
-    <label>📅 Viewing Date:</label>
-    <input type="date" id="rrDateInput" class="rr-date-input" onchange="rrSetDate(this.value)">
+    <label>📅 Date:</label>
+    <select id="rrSelMonth" class="rr-date-input" onchange="rrDropdownChange()">
+      <option value="0">January</option><option value="1">February</option>
+      <option value="2">March</option><option value="3">April</option>
+      <option value="4">May</option><option value="5">June</option>
+      <option value="6">July</option><option value="7">August</option>
+      <option value="8">September</option><option value="9">October</option>
+      <option value="10">November</option><option value="11">December</option>
+    </select>
+    <select id="rrSelDay" class="rr-date-input" onchange="rrDropdownChange()" style="width:72px;"></select>
+    <select id="rrSelYear" class="rr-date-input" onchange="rrDropdownChange()" style="width:90px;">
+      <option value="2026">2026</option><option value="2027">2027</option>
+    </select>
     <button class="rr-date-today" onclick="rrSetDate('today')">Today</button>
     <div class="rr-viewing-badge">Showing: <span id="rrViewingLabel">Today</span></div>
   </div>
@@ -220,15 +231,15 @@ permalink: /railroad/schedule
     const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
     if (val === 'today' || val === todayStr) {
       rrViewDate = null;
-      document.getElementById('rrDateInput').value = todayStr;
+      rrSetDropdown(todayStr);
       document.getElementById('rrViewingLabel').textContent = 'Today';
     } else {
       rrViewDate = val;
-      document.getElementById('rrDateInput').value = val;
+      rrSetDropdown(val);
       const d = new Date(val + 'T12:00:00');
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      document.getElementById('rrViewingLabel').textContent = `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      document.getElementById('rrViewingLabel').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
     }
     rrRenderSchedule();
     rrRenderTracker();
@@ -282,14 +293,17 @@ permalink: /railroad/schedule
       dep.setHours(t.h, t.m, 0, 0);
       const diff  = Math.round((dep - now) / 60000);
       const total = schedule.totalSeats;
-      let taken, status;
-      if (!isToday)         { status='ontime';   taken=Math.floor(Math.random()*Math.floor(total*0.4)); }
-      else if (diff < -15)  { status='full';     taken=total; }
-      else if (diff < 0)    { status='boarding'; taken=Math.floor(Math.random()*Math.floor(total*0.3))+Math.floor(total*0.6); }
-      else                  { status='ontime';   taken=Math.floor(Math.random()*Math.floor(total*0.5)); }
+      // No mock data — seats start at full capacity (0 taken).
+      // TODO: replace with GET /api/schedule?date=... once backend is ready.
+      const taken  = 0;
+      const seats  = total;
+      let status;
+      if (isToday && diff < -15) { status='full'; }      // past rides locked
+      else if (isToday && diff < 0) { status='boarding'; }
+      else { status='ontime'; }
       return {
         time:`${String(t.h).padStart(2,'0')}:${String(t.m).padStart(2,'0')}`,
-        h:t.h, diff, status, seats:total-taken, total, taken,
+        h:t.h, diff, status, seats, total, taken,
         trainType:schedule.type, isToday, dateStr:viewDate.toISOString().split('T')[0]
       };
     });
@@ -359,7 +373,7 @@ permalink: /railroad/schedule
     rides.forEach(r => {
       const cfg = SC[r.status], pct = Math.round((r.taken/r.total)*100);
       const canBook = r.status !== 'full';
-      const bookUrl = `/railroad/book?date=${r.dateStr}&time=${encodeURIComponent(r.time)}&type=${encodeURIComponent(r.trainType)}`;
+      const bookUrl = `/railroad/book?date=${r.dateStr}&time=${encodeURIComponent(r.time)}&type=${encodeURIComponent(r.trainType)}&seats=${r.seats}`;
       const card = document.createElement('div');
       card.className = 'rr-card';
       card.innerHTML = `
@@ -432,12 +446,49 @@ permalink: /railroad/schedule
     setTimeout(()=>{ rrRenderSchedule(); rrRenderTracker(); btn.classList.remove('spinning'); btn.disabled=false; }, 900);
   }
 
+  function rrDropdownChange() {
+    const y = parseInt(document.getElementById('rrSelYear').value);
+    const m = parseInt(document.getElementById('rrSelMonth').value);
+    // Rebuild day options for the selected month/year
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const dayEl = document.getElementById('rrSelDay');
+    const curDay = parseInt(dayEl.value) || 1;
+    dayEl.innerHTML = '';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      if (d === curDay) opt.selected = true;
+      dayEl.appendChild(opt);
+    }
+    const mm = String(m+1).padStart(2,'0');
+    const dd = String(parseInt(dayEl.value)).padStart(2,'0');
+    rrSetDate(`${y}-${mm}-${dd}`);
+  }
+
+  function rrSetDropdown(dateStr) {
+    // dateStr = 'YYYY-MM-DD'
+    const parts = dateStr.split('-');
+    const y = parseInt(parts[0]), m = parseInt(parts[1])-1, d = parseInt(parts[2]);
+    document.getElementById('rrSelYear').value = y;
+    document.getElementById('rrSelMonth').value = m;
+    // Rebuild days first
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const dayEl = document.getElementById('rrSelDay');
+    dayEl.innerHTML = '';
+    for (let i = 1; i <= daysInMonth; i++) {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = i;
+      if (i === d) opt.selected = true;
+      dayEl.appendChild(opt);
+    }
+  }
+
   // On load: check URL for ?date= param
   function rrInit() {
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('rrDateInput').value = todayStr;
-    document.getElementById('rrDateInput').min = todayStr; // can't book past dates
+    rrSetDropdown(todayStr);
 
     const params = new URLSearchParams(window.location.search);
     const dateParam = params.get('date');
