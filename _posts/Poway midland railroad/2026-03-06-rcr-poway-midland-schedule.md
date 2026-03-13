@@ -34,7 +34,6 @@ permalink: /railroad/schedule
   .rr-ticker-inner { display:inline-block; animation:rr-scroll 30s linear infinite; font-family:'Courier New',monospace; font-size:11px; color:#fff; letter-spacing:0.1em; }
   @keyframes rr-scroll { from { transform:translateX(100vw); } to { transform:translateX(-100%); } }
 
-  /* DATE SWITCHER */
   .rr-date-switcher { display:flex; align-items:center; gap:10px; background:var(--track); border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:16px; flex-wrap:wrap; }
   .rr-date-switcher label { font-family:'Courier New',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); white-space:nowrap; }
   .rr-date-input { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-family:'Courier New',monospace; font-size:12px; padding:6px 10px; cursor:pointer; }
@@ -88,7 +87,6 @@ permalink: /railroad/schedule
   .rr-alert { margin-top:10px; font-size:11px; font-family:'Courier New',monospace; padding:6px 10px; border-radius:6px; border-left:3px solid; }
   .alert-full { background:rgba(255,255,255,0.04); color:var(--smoke); border-color:#555; }
 
-  /* BOOK BUTTON */
   .rr-book-btn { display:block; width:100%; margin-top:12px; padding:9px; background:rgba(201,148,58,0.15); border:1px solid var(--gold); color:var(--gold); font-family:'Courier New',monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; text-align:center; border-radius:7px; text-decoration:none; transition:background 0.2s,transform 0.15s; cursor:pointer; }
   .rr-book-btn:hover { background:rgba(201,148,58,0.3); transform:translateY(-1px); }
   .rr-book-btn.disabled { opacity:0.35; pointer-events:none; border-color:var(--smoke); color:var(--smoke); background:transparent; }
@@ -102,7 +100,7 @@ permalink: /railroad/schedule
   .rr-stops { display:flex; justify-content:space-between; }
   .rr-stop { display:flex; flex-direction:column; align-items:center; gap:5px; }
   .rr-stop-dot { width:14px; height:14px; border-radius:50%; background:var(--steel); border:3px solid var(--track); z-index:2; }
-  .rr-stop-dot.passed { background:var(--rust); } .rr-stop-dot.active { background:var(--gold); box-shadow:0 0 10px rgba(201,148,58,0.6); }
+  .rr-stop-dot.passed { background:var(--rust); } .rr-stop-dot.active { background:var(--gold); box-shadow:0 0 10px rgba(201,148,60,0.6); }
   .rr-stop-name { font-family:'Courier New',monospace; font-size:9px; color:var(--smoke); text-align:center; letter-spacing:0.06em; text-transform:uppercase; max-width:60px; }
   .rr-stop-name.active-name { color:var(--gold); }
   .rr-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:18px; }
@@ -187,7 +185,7 @@ permalink: /railroad/schedule
   </div>
 
   <div class="rr-label">Schedule</div>
-  <div class="rr-grid" id="rrGrid"></div>
+  <div class="rr-grid" id="rrGrid"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--smoke);font-family:'Courier New',monospace;font-size:12px;">Loading schedule...</div></div>
 
   <div class="rr-label">Live Tracker</div>
   <div class="rr-tracker">
@@ -211,103 +209,71 @@ permalink: /railroad/schedule
 </div>
 
 <script>
+  const BACKEND = 'https://flask.opencodingsociety.com';
   const RR_STOPS = ['Depot Station','Oak Grove','Midland Curve','Park Loop','Return to Depot'];
 
-  const RR_EXPLICIT = {
-    '2026-03-08':'none','2026-03-15':'cable','2026-03-22':'speeder','2026-03-29':'cable',
-    '2026-04-05':'cable','2026-04-12':'none','2026-04-19':'cable','2026-04-26':'speeder',
-    '2026-05-03':'cable','2026-05-10':'none','2026-05-17':'cable','2026-05-24':'speeder','2026-05-31':'cable',
-  };
-
-  // Viewing date state (defaults to today)
   let rrViewDate = null; // null = today
+  let rrApiData  = null; // cached response from GET /api/schedule?date=...
 
   function getViewDate() {
     return rrViewDate ? new Date(rrViewDate + 'T12:00:00') : new Date();
   }
 
-  function rrSetDate(val) {
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    if (val === 'today' || val === todayStr) {
-      rrViewDate = null;
-      rrSetDropdown(todayStr);
-      document.getElementById('rrViewingLabel').textContent = 'Today';
-    } else {
-      rrViewDate = val;
-      rrSetDropdown(val);
-      const d = new Date(val + 'T12:00:00');
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      document.getElementById('rrViewingLabel').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-    }
-    rrRenderSchedule();
-    rrRenderTracker();
+  function todayStr() {
+    const t = new Date();
+    return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
   }
 
-  function getScheduleForDate(d) {
-    const dow  = d.getDay();
-    const y    = d.getFullYear();
-    const m    = String(d.getMonth()+1).padStart(2,'0');
-    const day  = String(d.getDate()).padStart(2,'0');
-    const key  = `${y}-${m}-${day}`;
-    const explicit = RR_EXPLICIT[key];
-
-    if (explicit === 'none') return { type:null, times:[], totalSeats:0, open:false };
-
-    if (dow === 6) {
-      return {
-        type:'Steam Locomotive 🚂',
-        times:[{h:10,m:0},{h:10,m:15},{h:10,m:30},{h:10,m:45},
-               {h:11,m:0},{h:11,m:15},{h:11,m:30},{h:11,m:45},
-               {h:12,m:0},{h:12,m:15},{h:12,m:30},{h:12,m:45},
-               {h:13,m:0},{h:13,m:15},{h:13,m:30},{h:13,m:45}],
-        totalSeats:65, open:true
-      };
+  // ── Fetch real seat data from backend ──────────────────────────────────────
+  async function rrFetchSchedule(dateStr) {
+    try {
+      const res = await fetch(`${BACKEND}/api/schedule?date=${dateStr}`, {
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      console.warn('Schedule fetch failed:', e);
+      return null;
     }
-
-    if (dow === 0) {
-      const isSpeeder = explicit === 'speeder';
-      const isCable   = explicit === 'cable';
-      if (!isSpeeder && !isCable) return { type:null, times:[], totalSeats:0, open:false };
-      return {
-        type: isSpeeder ? 'Speeder w/ Ore Cars 🚃' : 'Cable Car 🚌',
-        times:[{h:11,m:0},{h:11,m:20},{h:11,m:40},
-               {h:12,m:0},{h:12,m:20},{h:12,m:40},
-               {h:13,m:0},{h:13,m:20},{h:13,m:45}],
-        totalSeats:30, open:true
-      };
-    }
-
-    return { type:null, times:[], totalSeats:0, open:false };
   }
 
-  function buildRides(viewDate) {
-    const now      = new Date();
-    const schedule = getScheduleForDate(viewDate);
-    if (!schedule.open) return { schedule, rides:[] };
-    const isToday  = viewDate.toDateString() === now.toDateString();
+  // ── Build ride objects from API response ───────────────────────────────────
+  function buildRidesFromApi(apiData, viewDate) {
+    const now     = new Date();
+    const isToday = viewDate.toDateString() === now.toDateString();
 
-    const rides = schedule.times.map(t => {
-      const dep   = new Date(viewDate);
-      dep.setHours(t.h, t.m, 0, 0);
-      const diff  = Math.round((dep - now) / 60000);
-      const total = schedule.totalSeats;
-      // No mock data — seats start at full capacity (0 taken).
-      // TODO: replace with GET /api/schedule?date=... once backend is ready.
-      const taken  = 0;
-      const seats  = total;
+    if (!apiData || !apiData.operating) {
+      return { open: false, rides: [], trainType: null };
+    }
+
+    const rides = apiData.rides.map(r => {
+      const [hh, mm] = r.time.split(':').map(Number);
+      const dep  = new Date(viewDate);
+      dep.setHours(hh, mm, 0, 0);
+      const diff = Math.round((dep - now) / 60000);
+
       let status;
-      if (isToday && diff < -15) { status='full'; }      // past rides locked
-      else if (isToday && diff < 0) { status='boarding'; }
-      else { status='ontime'; }
+      if (r.status === 'full')                     status = 'full';
+      else if (isToday && diff < -15)              status = 'full';
+      else if (isToday && diff < 0)                status = 'boarding';
+      else                                         status = 'ontime';
+
       return {
-        time:`${String(t.h).padStart(2,'0')}:${String(t.m).padStart(2,'0')}`,
-        h:t.h, diff, status, seats, total, taken,
-        trainType:schedule.type, isToday, dateStr:viewDate.toISOString().split('T')[0]
+        time:      r.time,
+        h:         hh,
+        diff,
+        status,
+        seats:     r.available,
+        total:     r.capacity,
+        taken:     r.booked,
+        trainType: r.train_type,
+        isToday,
+        dateStr:   apiData.date
       };
     });
-    return { schedule, rides };
+
+    return { open: true, rides, trainType: apiData.train_type };
   }
 
   const SC = {
@@ -316,62 +282,70 @@ permalink: /railroad/schedule
     full:     {label:'Full',     pill:'pill-full',      color:'var(--steel)', bar:'#666'},
   };
 
-  function rrRenderSchedule() {
+  // ── Render schedule using API data ─────────────────────────────────────────
+  async function rrRenderSchedule() {
     const viewDate = getViewDate();
-    const { schedule, rides } = buildRides(viewDate);
-    const isToday = viewDate.toDateString() === new Date().toDateString();
+    const isToday  = viewDate.toDateString() === new Date().toDateString();
     const isFuture = viewDate > new Date();
-    const grid = document.getElementById('rrGrid');
+    const dateStr  = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}-${String(viewDate.getDate()).padStart(2,'0')}`;
 
-    // Status banner
+    const grid = document.getElementById('rrGrid');
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--smoke);font-family:'Courier New',monospace;font-size:12px;">Loading from server...</div>`;
+
+    const apiData = await rrFetchSchedule(dateStr);
+    rrApiData = apiData;
+    const { open, rides, trainType } = buildRidesFromApi(apiData, viewDate);
+
     const statusEl = document.getElementById('rrStatus');
     const dot = statusEl.querySelector('.rr-dot');
     const txt = statusEl.querySelector('.rr-status-text');
 
-    if (!schedule.open) {
+    if (!open) {
       statusEl.style.borderLeftColor = 'var(--steel)';
       dot.style.background = 'var(--steel)';
-      dot.style.animation = 'none';
+      dot.style.animation  = 'none';
       txt.innerHTML = `<strong style="color:var(--smoke)">NO OPERATION</strong> — No rides scheduled for this date`;
-      document.getElementById('rrNextTime').textContent = 'No Rides';
-      document.getElementById('rrNextSub').textContent = 'No train rides on this date.';
+      document.getElementById('rrNextTime').textContent  = 'No Rides';
+      document.getElementById('rrNextSub').textContent   = 'No train rides on this date.';
       document.getElementById('rrNextBadge').textContent = 'Closed';
       document.getElementById('rrNextBadge').style.background = 'var(--steel)';
       document.getElementById('rrNextSeats').textContent = '';
-      document.getElementById('rrNextBar').style.width = '0%';
+      document.getElementById('rrNextBar').style.width   = '0%';
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--smoke);"><div style="font-size:36px;margin-bottom:10px;">🚫</div><div style="font-family:'Courier New',monospace;font-size:12px;">No operation on this date.<br><span style="opacity:0.6">Saturdays: Steam · Select Sundays: Cable Car or Speeder</span></div></div>`;
       return;
     }
 
     statusEl.style.borderLeftColor = 'var(--green)';
     dot.style.background = 'var(--green)';
-    dot.style.animation = '';
-    txt.innerHTML = `<strong>TRAINS RUNNING</strong> — ${schedule.type} · Last ride at 1:45pm`;
+    dot.style.animation  = '';
+    txt.innerHTML = `<strong>TRAINS RUNNING</strong> — ${trainType} · Last ride at 1:45pm`;
 
-    // Next departure (only meaningful for today)
+    // Next departure
     const upcoming = isToday ? rides.filter(r => r.diff > -5 && r.status !== 'full') : rides;
     const next = upcoming[0];
     if (next) {
       document.getElementById('rrNextTime').textContent = next.time;
       let sub = '';
-      if (isFuture) sub = `First ride at ${rides[0].time} · ${schedule.type}`;
-      else if (next.diff <= 0) sub = `Boarding now! · ${schedule.type}`;
-      else if (next.diff < 60) sub = `Departs in ${next.diff} min · ${schedule.type}`;
-      else sub = `Departs in ${Math.floor(next.diff/60)}h ${next.diff%60}m · ${schedule.type}`;
+      if (isFuture)          sub = `First ride at ${rides[0].time} · ${trainType}`;
+      else if (next.diff<=0) sub = `Boarding now! · ${trainType}`;
+      else if (next.diff<60) sub = `Departs in ${next.diff} min · ${trainType}`;
+      else                   sub = `Departs in ${Math.floor(next.diff/60)}h ${next.diff%60}m · ${trainType}`;
       document.getElementById('rrNextSub').textContent = sub;
-      const pct = Math.round((next.taken/next.total)*100);
+      const pct = Math.round((next.taken / next.total) * 100);
       const bar = document.getElementById('rrNextBar');
-      bar.style.width = pct+'%'; bar.style.background = pct>80?'var(--red)':pct>50?'var(--amber)':'var(--green)';
+      bar.style.width      = pct + '%';
+      bar.style.background = pct>80 ? 'var(--red)' : pct>50 ? 'var(--amber)' : 'var(--green)';
       document.getElementById('rrNextSeats').textContent = `${next.seats} / ${next.total} seats available`;
       const cfg = SC[next.status];
-      document.getElementById('rrNextBadge').textContent = cfg.label;
-      document.getElementById('rrNextBadge').style.background = cfg.color;
+      document.getElementById('rrNextBadge').textContent       = cfg.label;
+      document.getElementById('rrNextBadge').style.background  = cfg.color;
     }
 
     // Ride cards
     grid.innerHTML = '';
     rides.forEach(r => {
-      const cfg = SC[r.status], pct = Math.round((r.taken/r.total)*100);
+      const cfg = SC[r.status];
+      const pct = Math.round((r.taken / r.total) * 100);
       const canBook = r.status !== 'full';
       const bookUrl = `/railroad/book?date=${r.dateStr}&time=${encodeURIComponent(r.time)}&type=${encodeURIComponent(r.trainType)}&seats=${r.seats}`;
       const card = document.createElement('div');
@@ -398,10 +372,9 @@ permalink: /railroad/schedule
 
   function rrRenderTracker() {
     const viewDate = getViewDate();
-    const { schedule } = buildRides(viewDate);
-    const isToday = viewDate.toDateString() === new Date().toDateString();
+    const isToday  = viewDate.toDateString() === new Date().toDateString();
 
-    if (!schedule.open || !isToday) {
+    if (!rrApiData || !rrApiData.operating || !isToday) {
       document.getElementById('rrLoc').textContent    = isToday ? 'No Service' : '—';
       document.getElementById('rrLocSub').textContent = isToday ? 'Not operating today' : 'Live tracker only available for today';
       document.getElementById('rrStat').textContent   = 'Offline';
@@ -413,7 +386,7 @@ permalink: /railroad/schedule
       return;
     }
 
-    const p = (Math.sin(Date.now()/30000)+1)/2;
+    const p  = (Math.sin(Date.now()/30000)+1)/2;
     const si = Math.min(Math.floor(p*RR_STOPS.length), RR_STOPS.length-1);
     const moving = Math.random() > 0.2;
     const stopsEl = document.getElementById('rrStops');
@@ -423,13 +396,13 @@ permalink: /railroad/schedule
       d.innerHTML = `<div class="rr-stop-dot ${i<si?'passed':i===si?'active':''}"></div><div class="rr-stop-name ${i===si?'active-name':''}">${s}</div>`;
       stopsEl.appendChild(d);
     });
-    document.getElementById('rrTrainIcon').style.left = (Math.round(p*88)+6)+'%';
-    document.getElementById('rrLoc').textContent      = RR_STOPS[si];
-    document.getElementById('rrLocSub').textContent   = si===0?'At depot':si===RR_STOPS.length-1?'Returning':'In transit';
-    document.getElementById('rrStat').textContent     = moving?'Moving':'Stopped';
-    document.getElementById('rrStatSub').textContent  = moving?'En route':'At platform';
-    document.getElementById('rrETA').textContent      = moving?`~${Math.round((1-p)*12+2)} min`:'—';
-    document.getElementById('rrSpeed').textContent    = moving?Math.round(8+Math.random()*6):0;
+    document.getElementById('rrTrainIcon').style.left     = (Math.round(p*88)+6)+'%';
+    document.getElementById('rrLoc').textContent          = RR_STOPS[si];
+    document.getElementById('rrLocSub').textContent       = si===0?'At depot':si===RR_STOPS.length-1?'Returning':'In transit';
+    document.getElementById('rrStat').textContent         = moving?'Moving':'Stopped';
+    document.getElementById('rrStatSub').textContent      = moving?'En route':'At platform';
+    document.getElementById('rrETA').textContent          = moving?`~${Math.round((1-p)*12+2)} min`:'—';
+    document.getElementById('rrSpeed').textContent        = moving?Math.round(8+Math.random()*6):0;
   }
 
   function rrClock() {
@@ -440,24 +413,24 @@ permalink: /railroad/schedule
     document.getElementById('rrDate').textContent = `${days[now.getDay()]} · ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
   }
 
-  function rrRefresh() {
+  async function rrRefresh() {
     const btn = document.getElementById('rrRefreshBtn');
     btn.classList.add('spinning'); btn.disabled = true;
-    setTimeout(()=>{ rrRenderSchedule(); rrRenderTracker(); btn.classList.remove('spinning'); btn.disabled=false; }, 900);
+    await rrRenderSchedule();
+    rrRenderTracker();
+    btn.classList.remove('spinning'); btn.disabled = false;
   }
 
   function rrDropdownChange() {
     const y = parseInt(document.getElementById('rrSelYear').value);
     const m = parseInt(document.getElementById('rrSelMonth').value);
-    // Rebuild day options for the selected month/year
     const daysInMonth = new Date(y, m+1, 0).getDate();
     const dayEl = document.getElementById('rrSelDay');
     const curDay = parseInt(dayEl.value) || 1;
     dayEl.innerHTML = '';
     for (let d = 1; d <= daysInMonth; d++) {
       const opt = document.createElement('option');
-      opt.value = d;
-      opt.textContent = d;
+      opt.value = d; opt.textContent = d;
       if (d === curDay) opt.selected = true;
       dayEl.appendChild(opt);
     }
@@ -467,12 +440,10 @@ permalink: /railroad/schedule
   }
 
   function rrSetDropdown(dateStr) {
-    // dateStr = 'YYYY-MM-DD'
     const parts = dateStr.split('-');
     const y = parseInt(parts[0]), m = parseInt(parts[1])-1, d = parseInt(parts[2]);
-    document.getElementById('rrSelYear').value = y;
+    document.getElementById('rrSelYear').value  = y;
     document.getElementById('rrSelMonth').value = m;
-    // Rebuild days first
     const daysInMonth = new Date(y, m+1, 0).getDate();
     const dayEl = document.getElementById('rrSelDay');
     dayEl.innerHTML = '';
@@ -484,15 +455,30 @@ permalink: /railroad/schedule
     }
   }
 
-  // On load: check URL for ?date= param
-  function rrInit() {
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    rrSetDropdown(todayStr);
+  function rrSetDate(val) {
+    const ts = todayStr();
+    if (val === 'today' || val === ts) {
+      rrViewDate = null;
+      rrSetDropdown(ts);
+      document.getElementById('rrViewingLabel').textContent = 'Today';
+    } else {
+      rrViewDate = val;
+      rrSetDropdown(val);
+      const d = new Date(val + 'T12:00:00');
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      document.getElementById('rrViewingLabel').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    }
+    rrRenderSchedule();
+    rrRenderTracker();
+  }
 
-    const params = new URLSearchParams(window.location.search);
+  function rrInit() {
+    const ts = todayStr();
+    rrSetDropdown(ts);
+    const params    = new URLSearchParams(window.location.search);
     const dateParam = params.get('date');
-    if (dateParam && dateParam !== todayStr) {
+    if (dateParam && dateParam !== ts) {
       rrSetDate(dateParam);
     } else {
       rrSetDate('today');
