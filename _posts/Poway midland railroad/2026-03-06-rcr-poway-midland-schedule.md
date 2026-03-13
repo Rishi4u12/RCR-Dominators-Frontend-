@@ -209,7 +209,7 @@ permalink: /railroad/schedule
 </div>
 
 <script>
-  const BACKEND = 'https://flask.opencodingsociety.com';
+  const BACKEND = 'http://localhost:8587';
   const RR_STOPS = ['Depot Station','Oak Grove','Midland Curve','Park Loop','Return to Depot'];
 
   let rrViewDate = null; // null = today

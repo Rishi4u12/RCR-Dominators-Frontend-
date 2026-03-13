@@ -219,7 +219,7 @@ permalink: /railroad/book
 </div>
 
 <script>
-  const BACKEND = 'https://flask.opencodingsociety.com';
+  const BACKEND = 'http://localhost:8587';
 
   let bkAdult = 1, bkChild = 0, bkInfant = 0;
   let bkAdultPrice = 5;
