@@ -151,6 +151,7 @@ permalink: /railroad/trains
   .eq-card-banner.gondola { background: #8b5cf6; }
   .eq-card-banner.coach   { background: var(--gold); }
   .eq-card-banner.static  { background: var(--smoke); }
+  .eq-card-banner.sold    { background: linear-gradient(90deg, #6b4c8a, #9b59b6); }
 
   .eq-card-emoji {
     font-size: 52px;
@@ -205,6 +206,7 @@ permalink: /railroad/trains
   }
   .status-operational { background: rgba(45,106,79,0.2); color: #4caf82; border: 1px solid rgba(76,175,130,0.3); }
   .status-static { background: rgba(255,255,255,0.05); color: var(--smoke); border: 1px solid rgba(255,255,255,0.1); }
+  .status-sold   { background: rgba(107,76,138,0.2); color: #c084fc; border: 1px solid rgba(192,132,252,0.3); }
   .eq-status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
   .eq-card-btn {
@@ -387,7 +389,7 @@ permalink: /railroad/trains
 const EQ_DATA = [
   {
     id: 'steam',
-    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/steam-engine1-1.png',
+    photo: '/assets/img/trains/steam-engine1-1.png',
     emoji: '🚂',
     type: 'Steam Locomotive',
     name: '1907 Baldwin 0-4-0',
@@ -417,7 +419,7 @@ const EQ_DATA = [
   },
   {
     id: 'cable',
-    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/cablecar-17.png',
+    photo: '/assets/img/trains/cablecar-17.png',
     emoji: '🚌',
     type: 'Historic Cable Car',
     name: 'SF Cable Car #17',
@@ -446,7 +448,7 @@ const EQ_DATA = [
   },
   {
     id: 'speeder',
-    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/speeder.png',
+    photo: '/assets/img/trains/speeder.jpg',
     emoji: '🚃',
     type: 'Maintenance Vehicle',
     name: 'Fairmont Speeder',
@@ -470,7 +472,7 @@ const EQ_DATA = [
   },
   {
     id: 'gondola',
-    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/gondola-cars.png',
+    photo: '/assets/img/trains/gondola-cars.jpg',
     emoji: '🛤️',
     type: 'Passenger Cars',
     name: 'Mining Gondola Cars (×4)',
@@ -520,7 +522,37 @@ const EQ_DATA = [
     ]
   },
   {
-    id: 'handcar',
+    id: 'trolley',
+    photo: '/assets/img/trains/Exhibit-12A-Trolley-Car-756x1024-1.jpg',
+    emoji: '🚃',
+    type: 'Historic Trolley Car',
+    name: 'LA Railway Trolley #57',
+    bannerClass: 'sold',
+    category: 'static',
+    status: 'sold',
+    tagline: 'A Hollywood prop, a San Francisco survivor — once a beloved PMRR icon. Sold 2020.',
+      'Built':          '1894–1897 as Electric Trolley #54',
+      'Converted':      '1912 as Materials Car #9306',
+      'Construction':   'Wood with iron frame',
+      'Length':         "26'",
+      'Weight':         '~24,000 LBS',
+      'Original Power': 'DC electric from overhead wire',
+      'Final Power':    'GM flat 6-cylinder (Corvair), 94 hp',
+      'Status':         '⚠️ Sold 2020 to Samuel Slater Experience, Webster MA',
+    },
+    history: `This trolley has had one of the most fascinating and complicated histories of any vehicle in the PMRR collection. The best research suggests portions of it — mostly the wheel truck frame — could date as far back as 1894, when the Maguire Manufacturing Company of Chicago began building open bench seat trolleys for the Los Angeles Railway Co.\n\nThey ran on two General Electric 25-horsepower electric traction motors. By the late 1890s most had been removed from service as Los Angeles grew. In 1912, many survivors — including this one — were converted into material-hauling cars, renumbered as #9306. They hauled rails, spikes, bolts and rubbish across the expanding city.\n\nIn 1926, #9306 was sold to Lasky Studios (which became Paramount in 1928), where it was remodeled to "cable car" appearance for use in several films. Its last known film appearance was in the 1969 movie "Gaily, Gaily." It then sat on a back lot until 1977 when sold to a private collector, eventually acquired by PMRR Volunteers in early 1993.\n\nAfter years of devoted restoration by PMRR Volunteers — replacing the wheel truck, rebuilding the superstructure, and adding safety features — the trolley became fully operational in Spring 1996 and became a firm favourite with members and visitors alike.\n\nIn 2020, the trolley was sold to the Samuel Slater Experience in Webster, MA, where it continues its remarkable journey.`,
+    timeline: [
+      { year: '1894', text: 'Built by Maguire Manufacturing Co. for the Los Angeles Railway Co. as Electric Trolley #54.' },
+      { year: '1912', text: 'Converted into a materials-hauling car, renumbered #9306.' },
+      { year: '1926', text: 'Sold to Lasky Studios (later Paramount); remodeled as a "cable car" movie prop.' },
+      { year: '1969', text: 'Last known film appearance in "Gaily, Gaily."' },
+      { year: '1977', text: 'Sold from Paramount back lot to a private collector.' },
+      { year: '1993', text: 'Acquired by PMRR Volunteers; restoration begins.' },
+      { year: '1996', text: 'Full restoration complete; enters regular service at Old Poway Park.' },
+      { year: '2020', text: 'Sold to the Samuel Slater Experience, Webster MA — a new chapter begins.' },
+    ]
+  },
+  {
     emoji: '🔧',
     type: 'Static Display',
     name: 'Replica 1900 Handcar',
@@ -604,8 +636,8 @@ function eqRender(data) {
         <div class="eq-spec-value">${v.length > 28 ? v.slice(0,28)+'…' : v}</div>
       </div>`).join('');
 
-    const statusLabel = eq.status === 'operational' ? 'Operational' : 'Static Display';
-    const statusClass = eq.status === 'operational' ? 'status-operational' : 'status-static';
+    const statusLabel = eq.status === 'operational' ? 'Operational' : eq.status === 'sold' ? '⚠️ Sold — Left PMRR 2020' : 'Static Display';
+    const statusClass = eq.status === 'operational' ? 'status-operational' : eq.status === 'sold' ? 'status-sold' : 'status-static';
 
     card.innerHTML = `
       <div class="eq-card-banner ${eq.bannerClass}"></div>
@@ -663,8 +695,8 @@ function eqOpenModal(id) {
   document.getElementById('eqModalType').textContent   = eq.type;
   document.getElementById('eqModalTitle').textContent  = eq.name;
 
-  const statusLabel = eq.status === 'operational' ? 'Operational' : 'Static Display';
-  const statusClass = eq.status === 'operational' ? 'status-operational' : 'status-static';
+  const statusLabel = eq.status === 'operational' ? 'Operational' : eq.status === 'sold' ? '⚠️ Sold — Left PMRR 2020' : 'Static Display';
+  const statusClass = eq.status === 'operational' ? 'status-operational' : eq.status === 'sold' ? 'status-sold' : 'status-static';
   document.getElementById('eqModalStatus').innerHTML =
     `<span class="eq-card-status ${statusClass}"><span class="eq-status-dot"></span>${statusLabel}</span>`;
 
