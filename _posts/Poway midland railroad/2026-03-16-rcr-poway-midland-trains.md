@@ -531,6 +531,7 @@ const EQ_DATA = [
     category: 'static',
     status: 'sold',
     tagline: 'A Hollywood prop, a San Francisco survivor — once a beloved PMRR icon. Sold 2020.',
+    specs: {
       'Built':          '1894–1897 as Electric Trolley #54',
       'Converted':      '1912 as Materials Car #9306',
       'Construction':   'Wood with iron frame',
