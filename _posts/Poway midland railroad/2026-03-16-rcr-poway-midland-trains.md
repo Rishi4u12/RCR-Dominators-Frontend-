@@ -364,6 +364,9 @@ permalink: /railroad/trains
   <div class="eq-modal" id="eqModalInner">
     <div class="eq-modal-banner" id="eqModalBanner"></div>
     <button class="eq-modal-close" onclick="eqCloseModal()">✕</button>
+    <div id="eqModalPhoto" style="display:none;">
+      <img id="eqModalPhotoImg" src="" alt="" style="width:100%;max-height:340px;object-fit:cover;display:block;">
+    </div>
     <div class="eq-modal-header">
       <span class="eq-modal-emoji" id="eqModalEmoji"></span>
       <div class="eq-modal-type" id="eqModalType"></div>
@@ -384,6 +387,7 @@ permalink: /railroad/trains
 const EQ_DATA = [
   {
     id: 'steam',
+    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/steam-engine1-1.png',
     emoji: '🚂',
     type: 'Steam Locomotive',
     name: '1907 Baldwin 0-4-0',
@@ -413,6 +417,7 @@ const EQ_DATA = [
   },
   {
     id: 'cable',
+    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/cablecar-17.png',
     emoji: '🚌',
     type: 'Historic Cable Car',
     name: 'SF Cable Car #17',
@@ -441,6 +446,7 @@ const EQ_DATA = [
   },
   {
     id: 'speeder',
+    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/speeder.png',
     emoji: '🚃',
     type: 'Maintenance Vehicle',
     name: 'Fairmont Speeder',
@@ -464,6 +470,7 @@ const EQ_DATA = [
   },
   {
     id: 'gondola',
+    photo: 'https://i0.wp.com/powaymidlandrr.org/wp-content/uploads/2025/05/gondola-cars.png',
     emoji: '🛤️',
     type: 'Passenger Cars',
     name: 'Mining Gondola Cars (×4)',
@@ -639,6 +646,19 @@ function eqOpenModal(id) {
   if (!eq) return;
 
   document.getElementById('eqModalBanner').className = `eq-modal-banner ${eq.bannerClass}`;
+
+  // Photo
+  const photoEl    = document.getElementById('eqModalPhoto');
+  const photoImgEl = document.getElementById('eqModalPhotoImg');
+  if (eq.photo) {
+    photoImgEl.src        = eq.photo;
+    photoImgEl.alt        = eq.name;
+    photoEl.style.display = 'block';
+  } else {
+    photoEl.style.display = 'none';
+    photoImgEl.src        = '';
+  }
+
   document.getElementById('eqModalEmoji').textContent  = eq.emoji;
   document.getElementById('eqModalType').textContent   = eq.type;
   document.getElementById('eqModalTitle').textContent  = eq.name;
