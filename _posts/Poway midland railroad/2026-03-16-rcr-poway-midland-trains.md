@@ -448,7 +448,7 @@ const EQ_DATA = [
   },
   {
     id: 'speeder',
-    photo: '/assets/img/trains/speeder.jpg',
+    photo: '/assets/img/trains/speeder.png',
     emoji: '🚃',
     type: 'Maintenance Vehicle',
     name: 'Fairmont Speeder',
@@ -472,7 +472,7 @@ const EQ_DATA = [
   },
   {
     id: 'gondola',
-    photo: '/assets/img/trains/gondola-cars.jpg',
+    photo: '/assets/img/trains/gondola-cars.png',
     emoji: '🛤️',
     type: 'Passenger Cars',
     name: 'Mining Gondola Cars (×4)',
@@ -523,7 +523,7 @@ const EQ_DATA = [
   },
   {
     id: 'trolley',
-    photo: '/assets/img/trains/Exhibit-12A-Trolley-Car-756x1024-1.jpg',
+    photo: '/assets/img/trains/Exhibit-12A-Trolley-Car-756x1024-1.png',
     emoji: '🚃',
     type: 'Historic Trolley Car',
     name: 'LA Railway Trolley #57',
