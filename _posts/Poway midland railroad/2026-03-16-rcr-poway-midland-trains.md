@@ -341,7 +341,6 @@ permalink: /railroad/trains
 <div class="eq-page">
 
   <div class="eq-hero">
-    <a href="/railroad/schedule" class="eq-back">← Schedule</a>
     <div class="eq-hero-tag">Poway–Midland Railroad · Est. 1987</div>
     <h1 class="eq-hero-title">Our<em>Fleet</em></h1>
     <p class="eq-hero-sub">Over a century of railroad history, lovingly restored and running every weekend at Old Poway Park.</p>
