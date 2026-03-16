@@ -389,7 +389,7 @@ permalink: /railroad/trains
 const EQ_DATA = [
   {
     id: 'steam',
-    photo: '/assets/img/trains/steam-engine1-1.png',
+    photo: '/assets/images/steam-engine1-1.png',
     emoji: '🚂',
     type: 'Steam Locomotive',
     name: '1907 Baldwin 0-4-0',
@@ -419,7 +419,7 @@ const EQ_DATA = [
   },
   {
     id: 'cable',
-    photo: '/assets/img/trains/cablecar-17.png',
+    photo: '/assets/images/cablecar-17.png',
     emoji: '🚌',
     type: 'Historic Cable Car',
     name: 'SF Cable Car #17',
@@ -448,7 +448,7 @@ const EQ_DATA = [
   },
   {
     id: 'speeder',
-    photo: '/assets/img/trains/speeder.png',
+    photo: '/assets/images/speeder.png',
     emoji: '🚃',
     type: 'Maintenance Vehicle',
     name: 'Fairmont Speeder',
@@ -472,7 +472,7 @@ const EQ_DATA = [
   },
   {
     id: 'gondola',
-    photo: '/assets/img/trains/gondola-cars.png',
+    photo: '/assets/images/gondola-cars.png',
     emoji: '🛤️',
     type: 'Passenger Cars',
     name: 'Mining Gondola Cars (×4)',
@@ -523,7 +523,7 @@ const EQ_DATA = [
   },
   {
     id: 'trolley',
-    photo: '/assets/img/trains/Exhibit-12A-Trolley-Car-756x1024-1.png',
+    photo: '/assets/images/Exhibit-12A-Trolley-Car-756x1024-1.png',
     emoji: '🚃',
     type: 'Historic Trolley Car',
     name: 'LA Railway Trolley #57',
