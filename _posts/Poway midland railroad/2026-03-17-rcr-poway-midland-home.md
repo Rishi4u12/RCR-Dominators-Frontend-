@@ -244,7 +244,7 @@ permalink: /railroad/home
         /* active state for current page (home) */
         .nav-bar a.active {
             border-bottom-color: #f4c28b;
-            color: #ffeac2;
+            color: #452d00;
             font-weight: 700;
         }
 
@@ -267,13 +267,13 @@ permalink: /railroad/home
             }
         }
     </style>
-</head>
+
 <body>
     <!-- TOP navigation bar with required buttons (Home, schedule, About trains, membership, About Us) -->
     <div class="nav-bar">
         <a href="#" class="active">Home</a>
         <a href="/railroad/schedule">Schedule</a>
-        <a href="#">About trains</a>
+        <a href="#">Live camera</a>
         <a href="#">Membership</a>
         <a href="#">About Us</a>
     </div>
@@ -333,7 +333,7 @@ permalink: /railroad/home
     <div class="nav-bar bottom-nav">
         <a href="#" class="active">Home</a>
         <a href="/railroad/schedule">Schedule</a>
-        <a href="#">About trains</a>
+        <a href="#">Live camera</a>
         <a href="#">Membership</a>
         <a href="#">About Us</a>
     </div>
@@ -344,4 +344,3 @@ permalink: /railroad/home
         <!-- keeping contact hint consistent: we already have full contact above -->
     </div>
 </body>
-</html>
