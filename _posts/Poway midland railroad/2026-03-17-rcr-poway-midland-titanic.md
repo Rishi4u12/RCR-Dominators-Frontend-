@@ -427,10 +427,10 @@ permalink: /railroad/titanic
 
   // Weather adjustment factors (applied to base survive probability)
   const WEATHER = {
-    sunny:  { label: '☀️ Sunny skies — ideal conditions',        delta: +0.05 },
-    cloudy: { label: '⛅ Overcast — slightly reduced visibility', delta: +0.01 },
-    rainy:  { label: '🌧️ Rainy — wet rails, reduced speed',      delta: -0.05 },
-    stormy: { label: '⛈️ Stormy — service may be affected',      delta: -0.10 },
+    sunny:  { label: '☀️ Sunny skies — perfect riding conditions',  delta: +0.15 },
+    cloudy: { label: '⛅ Overcast — still good conditions',          delta: +0.08 },
+    rainy:  { label: '🌧️ Rainy — wet rails, reduced speed',         delta: -0.05 },
+    stormy: { label: '⛈️ Stormy — service may be affected',         delta: -0.10 },
   };
 
   // Friendly names for feature weights display
