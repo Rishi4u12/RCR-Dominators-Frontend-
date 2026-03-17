@@ -1,7 +1,8 @@
 HOST ?= localhost
 PORT ?= 4500
+LIVERELOAD_PORT ?= 35730
 LOG_FILE = /tmp/jekyll$(PORT).log
-PYTHON := venv/bin/python3
+PYTHON := $(shell if [ -x venv/bin/python3 ]; then echo venv/bin/python3; else echo python3; fi)
 
 SHELL = /bin/bash -c
 .SHELLFLAGS = -e
@@ -281,6 +282,18 @@ jekyll-serve: bundle-install
 		echo "Server PID: $$!"
 	@make wait-for-server
 
+# Start Jekyll with LiveReload and automatic port conflict cleanup
+jekyll-serve-live: bundle-install
+	@touch /tmp/.notebook_watch_marker
+	@lsof -tiTCP:$(PORT) -sTCP:LISTEN | xargs -r kill -9
+	@lsof -tiTCP:$(LIVERELOAD_PORT) -sTCP:LISTEN | xargs -r kill -9
+	@bundle exec jekyll serve -H $(HOST) -P $(PORT) --watch --livereload --livereload-port $(LIVERELOAD_PORT) > $(LOG_FILE) 2>&1 & \
+		echo "Server PID: $$!"
+	@make wait-for-server
+
+serve-live: stop convert split-courses jekyll-serve-live
+	@echo "LiveReload running on port $(LIVERELOAD_PORT)"
+
 # Common server wait logic
 wait-for-server:
 	@until [ -f $(LOG_FILE) ]; do sleep 1; done
@@ -333,6 +346,7 @@ help:
 	@echo "  make serve-so-simple   - Switch to So Simple and serve"
 	@echo "  make serve-yat      - Switch to Yat and serve"
 	@echo "  make serve-hydejack - Switch to HydeJack and serve"
+	@echo "  make serve-live     - Serve with LiveReload and auto port cleanup"
 	@echo ""
 	@echo "Theme Build Commands:"
 	@echo "  make build-minima   - Switch to Minima and build"

@@ -1,0 +1,21 @@
+{
+  "route": [
+    { "lat": 32.9623, "lng": -117.0352 },
+    { "lat": 32.9625, "lng": -117.0350 },
+    { "lat": 32.9627, "lng": -117.0348 },
+    { "lat": 32.9629, "lng": -117.0346 },
+    { "lat": 32.9630, "lng": -117.0349 },
+    { "lat": 32.9628, "lng": -117.0351 },
+    { "lat": 32.9626, "lng": -117.0353 }
+  ],
+  "stops": [
+    { "name": "Poway Midland Station", "lat": 32.9623, "lng": -117.0352, "type": "start" },
+    { "name": "Turnaround Point", "lat": 32.9630, "lng": -117.0349, "type": "turnaround" },
+    { "name": "Platform Return", "lat": 32.9626, "lng": -117.0353, "type": "stop" }
+  ],
+  "pointsOfInterest": [
+    { "name": "Heritage Platform", "lat": 32.96245, "lng": -117.03505 },
+    { "name": "Historic Rail Segment", "lat": 32.96282, "lng": -117.03477 },
+    { "name": "Old Poway Park Historic Area", "lat": 32.96258, "lng": -117.03516 }
+  ]
+}

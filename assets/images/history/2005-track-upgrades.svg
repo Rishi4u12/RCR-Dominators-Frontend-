@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">2005 Track Improvements</title>
+  <desc id="desc">Stylized illustration of maintenance and upgraded track at the railroad.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7db0d4"/>
+      <stop offset="1" stop-color="#f6f8fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="0" y="530" width="1200" height="270" fill="#d7e9c8"/>
+  <path d="M120 720 C310 640, 460 640, 640 710 C810 775, 940 760, 1080 690" fill="none" stroke="#5e4229" stroke-width="24" stroke-linecap="round"/>
+  <path d="M120 664 C310 585, 460 586, 640 656 C810 720, 940 705, 1080 636" fill="none" stroke="#5e4229" stroke-width="24" stroke-linecap="round"/>
+  <g stroke="#b88c5f" stroke-width="10">
+    <line x1="170" y1="690" x2="175" y2="740"/>
+    <line x1="260" y1="655" x2="265" y2="705"/>
+    <line x1="350" y1="635" x2="355" y2="685"/>
+    <line x1="440" y1="630" x2="445" y2="680"/>
+    <line x1="530" y1="640" x2="535" y2="690"/>
+    <line x1="620" y1="665" x2="625" y2="715"/>
+  </g>
+  <rect x="760" y="255" width="250" height="170" rx="20" fill="#ffffffd9" stroke="#2e5577" stroke-width="6"/>
+  <text x="790" y="320" font-family="Arial, sans-serif" font-size="38" fill="#2e5577">UPGRADE</text>
+  <text x="790" y="365" font-family="Arial, sans-serif" font-size="34" fill="#2e5577">COMPLETE</text>
+  <text x="120" y="180" font-family="Georgia, serif" font-size="66" fill="#2b4c6d">2005</text>
+  <text x="120" y="252" font-family="Arial, sans-serif" font-size="44" fill="#344e63">Track improvements</text>
+</svg>

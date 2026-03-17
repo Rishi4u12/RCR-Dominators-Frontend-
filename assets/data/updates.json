@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Spring Family Ride Window Expanded",
+    "category": "events",
+    "date": "2026-03-12",
+    "summary": "Saturday rides now run until 4:30 PM during spring programming weeks."
+  },
+  {
+    "id": 2,
+    "title": "Volunteer Engineer Orientation",
+    "category": "volunteer",
+    "date": "2026-03-08",
+    "summary": "New volunteer orientation includes dispatch basics, safety checks, and guest operations."
+  },
+  {
+    "id": 3,
+    "title": "Group Booking Support Added",
+    "category": "service",
+    "date": "2026-02-27",
+    "summary": "School and community groups can request planning support through the online form."
+  },
+  {
+    "id": 4,
+    "title": "Track Maintenance Complete",
+    "category": "operations",
+    "date": "2026-02-15",
+    "summary": "Routine maintenance improved ride smoothness and reduced dwell time at turnaround point."
+  }
+]

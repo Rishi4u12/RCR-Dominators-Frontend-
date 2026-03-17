@@ -59,6 +59,7 @@ exclude:
 #   quiet_deps: true
 #   silence_deprecations: [import]
 incremental: true
+livereload_port: 35730
 
 remote_theme: jekyll/minima
 plugins:

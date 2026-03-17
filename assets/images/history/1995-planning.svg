@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">1995 Planning Begins</title>
+  <desc id="desc">Stylized illustration of Poway Midland Railroad planning maps and notes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f3c680"/>
+      <stop offset="1" stop-color="#f8f7f2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="110" y="110" width="980" height="580" rx="24" fill="#ffffffd0" stroke="#8e5d2a" stroke-width="6"/>
+  <path d="M220 540 C380 430, 520 560, 710 460 C820 405, 915 455, 1010 380" fill="none" stroke="#b24312" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="220" cy="540" r="16" fill="#1e4f7a"/>
+  <circle cx="1010" cy="380" r="16" fill="#1e4f7a"/>
+  <text x="160" y="210" font-family="Georgia, serif" font-size="66" fill="#2b4c6d">1995</text>
+  <text x="160" y="282" font-family="Arial, sans-serif" font-size="44" fill="#344e63">Railroad planning begins</text>
+</svg>
