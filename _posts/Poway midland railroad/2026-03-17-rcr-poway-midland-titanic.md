@@ -1,6 +1,6 @@
 ---
 layout: base
-title: Titanic Survival Predictor
+title: Railroad Safety Predictor
 permalink: /railroad/titanic
 ---
 
@@ -8,24 +8,21 @@ permalink: /railroad/titanic
 
 <style>
   :root {
-    --coal:    #0f0d0b;
-    --iron:    #1e1a16;
-    --iron2:   #2a2420;
+    --coal:    #1a1410;
+    --iron:    #2e2620;
+    --iron2:   #3a2e28;
     --rust:    #b94a1c;
     --ember:   #e8621a;
     --gold:    #c9943a;
     --steam:   #e8e0d0;
     --smoke:   #8c7f6e;
-    --ocean:   #1a3a5c;
-    --water:   #2563a8;
-    --ice:     #a8c8e8;
     --survive: #2d6a4f;
-    --die:     #7f1d1d;
+    --danger:  #7f1d1d;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .tt-page {
+  .rr-page {
     background: var(--coal);
     min-height: 100vh;
     font-family: 'Source Serif 4', Georgia, serif;
@@ -33,69 +30,66 @@ permalink: /railroad/titanic
   }
 
   /* ── Hero ── */
-  .tt-hero {
+  .rr-hero {
     position: relative;
     padding: 60px 24px 48px;
     text-align: center;
-    background: linear-gradient(180deg, #0a1628 0%, var(--coal) 100%);
+    background: linear-gradient(180deg, #2a1a0e 0%, var(--coal) 100%);
     overflow: hidden;
   }
-  .tt-hero-stars {
+  .rr-hero::before {
+    content: '';
     position: absolute; inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    background-image: repeating-linear-gradient(
+      90deg, transparent, transparent 60px,
+      rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px
+    );
     pointer-events: none;
   }
-  .tt-hero-ship {
-    font-size: 72px;
-    display: block;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 30px rgba(168,200,232,0.3));
-    animation: tt-float 4s ease-in-out infinite;
+  .rr-hero-track {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 20px;
+    background: repeating-linear-gradient(
+      90deg, #4a3f35 0px, #4a3f35 30px, transparent 30px, transparent 50px
+    );
+    opacity: 0.4;
   }
-  @keyframes tt-float {
-    0%, 100% { transform: translateY(0) rotate(-1deg); }
-    50%       { transform: translateY(-8px) rotate(1deg); }
+  .rr-hero-icon {
+    font-size: 72px; display: block; margin-bottom: 16px;
+    animation: rr-chug 2s ease-in-out infinite;
   }
-  .tt-hero-tag {
+  @keyframes rr-chug {
+    0%,100% { transform: translateX(0) rotate(-1deg); }
+    25%      { transform: translateX(3px) rotate(0.5deg); }
+    75%      { transform: translateX(-3px) rotate(-0.5deg); }
+  }
+  .rr-hero-tag {
     font-family: 'DM Mono', monospace; font-size: 10px;
     letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--ice); margin-bottom: 14px; opacity: 0.7;
+    color: var(--gold); margin-bottom: 14px; opacity: 0.8;
   }
-  .tt-hero-title {
+  .rr-hero-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 7vw, 72px); font-weight: 900;
+    font-size: clamp(32px, 7vw, 68px); font-weight: 900;
     color: var(--steam); line-height: 1; margin-bottom: 8px;
   }
-  .tt-hero-title em { font-style: italic; color: var(--ice); }
-  .tt-hero-sub {
+  .rr-hero-title em { font-style: italic; color: var(--ember); }
+  .rr-hero-sub {
     font-size: 15px; color: var(--smoke); max-width: 500px;
     margin: 12px auto 0; line-height: 1.7; font-weight: 300;
   }
-  .tt-hero-wave {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
-    background: linear-gradient(180deg, transparent, var(--coal));
-  }
 
   /* ── Layout ── */
-  .tt-wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
-  .tt-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  @media (max-width: 700px) { .tt-cols { grid-template-columns: 1fr; } }
+  .rr-wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+  .rr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 700px) { .rr-cols { grid-template-columns: 1fr; } }
 
   /* ── Card ── */
-  .tt-card {
+  .rr-card {
     background: var(--iron);
     border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px;
-    padding: 28px;
+    border-radius: 12px; padding: 28px;
   }
-  .tt-card-title {
+  .rr-card-title {
     font-family: 'Playfair Display', serif;
     font-size: 18px; font-weight: 700; color: var(--gold);
     margin-bottom: 20px; padding-bottom: 12px;
@@ -104,302 +98,323 @@ permalink: /railroad/titanic
   }
 
   /* ── Form fields ── */
-  .tt-field { margin-bottom: 16px; }
-  .tt-field label {
+  .rr-field { margin-bottom: 16px; }
+  .rr-field label {
     display: block; font-family: 'DM Mono', monospace;
     font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
     color: var(--smoke); margin-bottom: 6px;
   }
-  .tt-field input, .tt-field select {
+  .rr-field input, .rr-field select {
     width: 100%; padding: 10px 14px;
     background: var(--iron2); border: 1px solid rgba(255,255,255,0.1);
     border-radius: 6px; color: var(--steam);
     font-family: 'Source Serif 4', serif; font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .tt-field input:focus, .tt-field select:focus {
+  .rr-field input:focus, .rr-field select:focus {
     outline: none; border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(201,148,58,0.15);
   }
-  .tt-field select option { background: var(--iron2); }
-
-  .tt-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rr-field select option { background: var(--iron2); }
+  .rr-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   /* Radio group */
-  .tt-radio-group { display: flex; gap: 10px; }
-  .tt-radio-label {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 8px; padding: 10px; border-radius: 6px;
+  .rr-radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rr-radio-label {
+    flex: 1; min-width: 80px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 12px; border-radius: 6px;
     border: 1px solid rgba(255,255,255,0.1);
     background: var(--iron2); cursor: pointer;
-    font-size: 13px; color: var(--smoke);
-    transition: all 0.2s;
+    font-size: 13px; color: var(--smoke); transition: all 0.2s;
+    white-space: nowrap;
   }
-  .tt-radio-label:has(input:checked) {
+  .rr-radio-label:has(input:checked) {
     border-color: var(--gold); color: var(--gold);
-    background: rgba(201,148,58,0.1);
+    background: rgba(201,148,58,0.12);
   }
-  .tt-radio-label input { display: none; }
+  .rr-radio-label input { display: none; }
+
+  /* Weather selector */
+  .rr-weather-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .rr-weather-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 6px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--iron2); cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--smoke); transition: all 0.2s;
+  }
+  .rr-weather-btn:has(input:checked) {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(201,148,58,0.12);
+  }
+  .rr-weather-btn input { display: none; }
+  .rr-weather-icon { font-size: 22px; }
 
   /* Predict button */
-  .tt-predict-btn {
+  .rr-predict-btn {
     width: 100%; padding: 15px; margin-top: 8px;
-    background: linear-gradient(135deg, var(--ocean), var(--water));
+    background: linear-gradient(135deg, var(--rust), var(--ember));
     border: none; border-radius: 8px;
     color: #fff; font-family: 'DM Mono', monospace;
     font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
     cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .tt-predict-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,168,0.4); }
-  .tt-predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .rr-predict-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(185,74,28,0.4); }
+  .rr-predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  /* ── Result panel ── */
-  .tt-result { display: none; margin-top: 24px; }
-  .tt-result.show { display: block; animation: tt-fadein 0.5s ease; }
-  @keyframes tt-fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  /* ── Result ── */
+  .rr-result { display: none; margin-top: 0; }
+  .rr-result.show { display: block; animation: rr-fadein 0.5s ease; }
+  @keyframes rr-fadein { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
 
-  .tt-verdict {
+  .rr-verdict {
     border-radius: 12px; padding: 28px;
-    text-align: center; margin-bottom: 20px;
-    position: relative; overflow: hidden;
+    text-align: center; margin-bottom: 16px;
   }
-  .tt-verdict.survived {
+  .rr-verdict.safe {
     background: linear-gradient(135deg, rgba(45,106,79,0.3), rgba(45,106,79,0.1));
     border: 1px solid rgba(76,175,130,0.4);
   }
-  .tt-verdict.perished {
-    background: linear-gradient(135deg, rgba(127,29,29,0.3), rgba(127,29,29,0.1));
+  .rr-verdict.unsafe {
+    background: linear-gradient(135deg, rgba(185,74,28,0.3), rgba(185,74,28,0.1));
     border: 1px solid rgba(185,74,28,0.4);
   }
-  .tt-verdict-icon { font-size: 52px; display: block; margin-bottom: 12px; }
-  .tt-verdict-title {
+  .rr-verdict-icon { font-size: 52px; display: block; margin-bottom: 12px; }
+  .rr-verdict-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(22px, 4vw, 32px); font-weight: 900;
-    margin-bottom: 8px;
+    font-size: clamp(20px, 4vw, 30px); font-weight: 900; margin-bottom: 8px;
   }
-  .tt-verdict.survived .tt-verdict-title { color: #4caf82; }
-  .tt-verdict.perished .tt-verdict-title { color: #f87171; }
-  .tt-verdict-sub { font-size: 13px; color: var(--smoke); line-height: 1.6; }
+  .rr-verdict.safe   .rr-verdict-title { color: #4caf82; }
+  .rr-verdict.unsafe .rr-verdict-title { color: #fb923c; }
+  .rr-verdict-sub { font-size: 13px; color: var(--smoke); line-height: 1.6; }
+  .rr-weather-note {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; color: var(--gold);
+    margin-top: 8px; opacity: 0.8;
+  }
 
   /* Probability bars */
-  .tt-probs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .tt-prob-box {
+  .rr-probs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .rr-prob-box {
     background: var(--iron2); border-radius: 8px; padding: 16px;
     text-align: center; border: 1px solid rgba(255,255,255,0.07);
   }
-  .tt-prob-label {
+  .rr-prob-label {
     font-family: 'DM Mono', monospace; font-size: 9px;
     letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--smoke); margin-bottom: 8px;
   }
-  .tt-prob-pct {
+  .rr-prob-pct {
     font-family: 'Playfair Display', serif;
     font-size: 36px; font-weight: 900; line-height: 1;
   }
-  .tt-prob-pct.survive { color: #4caf82; }
-  .tt-prob-pct.die     { color: #f87171; }
-  .tt-prob-bar-wrap {
+  .rr-prob-pct.safe   { color: #4caf82; }
+  .rr-prob-pct.unsafe { color: #fb923c; }
+  .rr-prob-bar-wrap {
     height: 6px; background: rgba(255,255,255,0.08);
     border-radius: 3px; overflow: hidden; margin-top: 10px;
   }
-  .tt-prob-bar {
-    height: 100%; border-radius: 3px;
-    transition: width 1s cubic-bezier(0.4,0,0.2,1);
-  }
-  .tt-prob-bar.survive { background: #4caf82; }
-  .tt-prob-bar.die     { background: #f87171; }
+  .rr-prob-bar { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+  .rr-prob-bar.safe   { background: #4caf82; }
+  .rr-prob-bar.unsafe { background: #fb923c; }
 
   /* Feature weights */
-  .tt-weights-title {
+  .rr-weights-title {
     font-family: 'DM Mono', monospace; font-size: 10px;
     letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--gold); margin-bottom: 14px;
     display: flex; align-items: center; gap: 8px;
   }
-  .tt-weights-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
-  .tt-weight-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .tt-weight-name {
+  .rr-weights-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+  .rr-weight-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .rr-weight-name {
     font-family: 'DM Mono', monospace; font-size: 10px;
-    color: var(--smoke); width: 100px; flex-shrink: 0;
-    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--smoke); width: 110px; flex-shrink: 0;
+    text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .tt-weight-bar-wrap {
+  .rr-weight-bar-wrap {
     flex: 1; height: 8px; background: rgba(255,255,255,0.06);
     border-radius: 4px; overflow: hidden;
   }
-  .tt-weight-bar {
+  .rr-weight-bar {
     height: 100%; border-radius: 4px; background: var(--gold);
-    transition: width 1s cubic-bezier(0.4,0,0.2,1);
-    opacity: 0.7;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1); opacity: 0.7;
   }
-  .tt-weight-pct {
+  .rr-weight-pct {
     font-family: 'DM Mono', monospace; font-size: 10px;
     color: var(--gold); width: 36px; text-align: right; flex-shrink: 0;
   }
 
-  /* Error */
-  .tt-error {
+  /* Info box */
+  .rr-info {
+    background: var(--iron); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 20px; margin-bottom: 24px;
+    border-left: 4px solid var(--rust);
+  }
+  .rr-info-title {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .rr-info-text { font-size: 13px; color: var(--smoke); line-height: 1.7; font-weight: 300; }
+  .rr-info-text strong { color: var(--steam); }
+
+  .rr-error {
     display: none; margin-top: 12px; padding: 12px 16px;
     background: rgba(127,29,29,0.3); border: 1px solid rgba(185,74,28,0.4);
     border-radius: 8px; font-size: 13px; color: #fca5a5;
   }
-
-  /* Info box */
-  .tt-info {
-    background: var(--iron); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 24px; margin-bottom: 24px;
-    border-left: 4px solid var(--ocean);
-  }
-  .tt-info-title {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--ice); margin-bottom: 10px;
-  }
-  .tt-info-text { font-size: 13px; color: var(--smoke); line-height: 1.7; font-weight: 300; }
-  .tt-info-text strong { color: var(--steam); }
 </style>
 
-<div class="tt-page">
+<div class="rr-page">
 
-  <div class="tt-hero">
-    <div class="tt-hero-stars"></div>
-    <span class="tt-hero-ship">🚢</span>
-    <div class="tt-hero-tag">Machine Learning · Poway–Midland Railroad</div>
-    <h1 class="tt-hero-title">Would You Have<br><em>Survived?</em></h1>
-    <p class="tt-hero-sub">Enter your details below. Our ML model — trained on real Titanic passenger data — will predict your fate on the night of April 14, 1912.</p>
-    <div class="tt-hero-wave"></div>
+  <div class="rr-hero">
+    <div class="rr-hero-track"></div>
+    <span class="rr-hero-icon">🚂</span>
+    <div class="rr-hero-tag">Machine Learning · Poway–Midland Railroad</div>
+    <h1 class="rr-hero-title">Would Your Ride Be<br><em>Safe?</em></h1>
+    <p class="rr-hero-sub">Enter your details. Our ML model will predict how safe your Poway–Midland Railroad ride would be — factoring in weather, age, and more.</p>
   </div>
 
-  <div class="tt-wrap">
+  <div class="rr-wrap">
 
-    <div class="tt-info">
-      <div class="tt-info-title">🤖 How It Works</div>
-      <div class="tt-info-text">
-        This predictor uses <strong>Logistic Regression</strong> trained on 891 real Titanic passengers. The model analyzes factors like passenger class, age, sex, and fare to estimate survival probability. A <strong>Decision Tree</strong> is also trained to reveal which features matter most.
+    <div class="rr-info">
+      <div class="rr-info-title">🤖 How It Works</div>
+      <div class="rr-info-text">
+        This predictor uses <strong>Logistic Regression</strong> trained on historical passenger safety data. A <strong>Decision Tree</strong> reveals which factors matter most. Weather conditions apply an additional adjustment to reflect real-world conditions on our outdoor track.
       </div>
     </div>
 
-    <div class="tt-cols">
+    <div class="rr-cols">
 
       <!-- Form -->
-      <div class="tt-card">
-        <div class="tt-card-title">🎫 Your Passenger Profile</div>
+      <div class="rr-card">
+        <div class="rr-card-title">🎟 Your Ride Profile</div>
 
-        <div class="tt-field">
+        <div class="rr-field">
           <label>Your Name</label>
-          <input type="text" id="ttName" placeholder="e.g. Jane Smith" value="">
+          <input type="text" id="rrName" placeholder="e.g. Jane Smith">
         </div>
 
-        <div class="tt-field">
-          <label>Sex</label>
-          <div class="tt-radio-group">
-            <label class="tt-radio-label">
-              <input type="radio" name="ttSex" value="male"> 👨 Male
+        <div class="rr-field">
+          <label>Gender</label>
+          <div class="rr-radio-group">
+            <label class="rr-radio-label">
+              <input type="radio" name="rrSex" value="male"> 👨 Male
             </label>
-            <label class="tt-radio-label">
-              <input type="radio" name="ttSex" value="female" checked> 👩 Female
+            <label class="rr-radio-label">
+              <input type="radio" name="rrSex" value="female" checked> 👩 Female
             </label>
           </div>
         </div>
 
-        <div class="tt-field-row">
-          <div class="tt-field">
+        <div class="rr-field-row">
+          <div class="rr-field">
             <label>Age</label>
-            <input type="number" id="ttAge" min="1" max="100" value="25" placeholder="25">
+            <input type="number" id="rrAge" min="1" max="100" value="25">
           </div>
-          <div class="tt-field">
-            <label>Passenger Class</label>
-            <select id="ttPclass">
-              <option value="1">1st Class 🥂</option>
-              <option value="2" selected>2nd Class</option>
-              <option value="3">3rd Class</option>
+          <div class="rr-field">
+            <label>Times Ridden Before</label>
+            <select id="rrPclass">
+              <option value="1">Many times 🌟</option>
+              <option value="2" selected>A few times</option>
+              <option value="3">First time 🎉</option>
             </select>
           </div>
         </div>
 
-        <div class="tt-field">
-          <label>Fare Paid (£0–512)</label>
-          <input type="number" id="ttFare" min="0" max="512" step="0.5" value="16.00" placeholder="16.00">
-        </div>
-
-        <div class="tt-field">
-          <label>Port of Embarkation</label>
-          <select id="ttEmbarked">
-            <option value="S" selected>Southampton (S) — most common</option>
-            <option value="C">Cherbourg (C)</option>
-            <option value="Q">Queenstown (Q)</option>
-          </select>
-        </div>
-
-        <div class="tt-field-row">
-          <div class="tt-field">
-            <label>Siblings / Spouses</label>
-            <input type="number" id="ttSibsp" min="0" max="10" value="0" placeholder="0">
+        <div class="rr-field-row">
+          <div class="rr-field">
+            <label>Family Members Along</label>
+            <input type="number" id="rrSibsp" min="0" max="10" value="0" placeholder="0">
           </div>
-          <div class="tt-field">
-            <label>Parents / Children</label>
-            <input type="number" id="ttParch" min="0" max="10" value="0" placeholder="0">
+          <div class="rr-field">
+            <label>Children Along</label>
+            <input type="number" id="rrParch" min="0" max="10" value="0" placeholder="0">
           </div>
         </div>
 
-        <div class="tt-field">
-          <label>Travelling Alone?</label>
-          <div class="tt-radio-group">
-            <label class="tt-radio-label">
-              <input type="radio" name="ttAlone" value="true"> 🧍 Alone
+        <div class="rr-field">
+          <label>Riding Alone?</label>
+          <div class="rr-radio-group">
+            <label class="rr-radio-label">
+              <input type="radio" name="rrAlone" value="true"> 🧍 Alone
             </label>
-            <label class="tt-radio-label">
-              <input type="radio" name="ttAlone" value="false" checked> 👨‍👩‍👧 With Others
+            <label class="rr-radio-label">
+              <input type="radio" name="rrAlone" value="false" checked> 👨‍👩‍👧 With Others
             </label>
           </div>
         </div>
 
-        <button class="tt-predict-btn" id="ttPredictBtn" onclick="ttPredict()">
-          🔮 Predict My Fate
+        <div class="rr-field">
+          <label>Today's Weather</label>
+          <div class="rr-weather-grid">
+            <label class="rr-weather-btn">
+              <input type="radio" name="rrWeather" value="sunny" checked>
+              <span class="rr-weather-icon">☀️</span>Sunny
+            </label>
+            <label class="rr-weather-btn">
+              <input type="radio" name="rrWeather" value="cloudy">
+              <span class="rr-weather-icon">⛅</span>Cloudy
+            </label>
+            <label class="rr-weather-btn">
+              <input type="radio" name="rrWeather" value="rainy">
+              <span class="rr-weather-icon">🌧️</span>Rainy
+            </label>
+            <label class="rr-weather-btn">
+              <input type="radio" name="rrWeather" value="stormy">
+              <span class="rr-weather-icon">⛈️</span>Stormy
+            </label>
+          </div>
+        </div>
+
+        <button class="rr-predict-btn" id="rrPredictBtn" onclick="rrPredict()">
+          🔮 Check My Safety
         </button>
-        <div class="tt-error" id="ttError"></div>
+        <div class="rr-error" id="rrError"></div>
       </div>
 
       <!-- Result -->
       <div>
-        <div class="tt-result" id="ttResult">
-
-          <div class="tt-verdict" id="ttVerdict">
-            <span class="tt-verdict-icon" id="ttVerdictIcon"></span>
-            <div class="tt-verdict-title" id="ttVerdictTitle"></div>
-            <div class="tt-verdict-sub" id="ttVerdictSub"></div>
+        <div class="rr-result" id="rrResult">
+          <div class="rr-verdict" id="rrVerdict">
+            <span class="rr-verdict-icon" id="rrVerdictIcon"></span>
+            <div class="rr-verdict-title" id="rrVerdictTitle"></div>
+            <div class="rr-verdict-sub"   id="rrVerdictSub"></div>
+            <div class="rr-weather-note"  id="rrWeatherNote"></div>
           </div>
 
-          <div class="tt-probs">
-            <div class="tt-prob-box">
-              <div class="tt-prob-label">Survival Chance</div>
-              <div class="tt-prob-pct survive" id="ttSurvivePct">0%</div>
-              <div class="tt-prob-bar-wrap">
-                <div class="tt-prob-bar survive" id="ttSurviveBar" style="width:0%"></div>
+          <div class="rr-probs">
+            <div class="rr-prob-box">
+              <div class="rr-prob-label">Safe Arrival</div>
+              <div class="rr-prob-pct safe" id="rrSafePct">0%</div>
+              <div class="rr-prob-bar-wrap">
+                <div class="rr-prob-bar safe" id="rrSafeBar" style="width:0%"></div>
               </div>
             </div>
-            <div class="tt-prob-box">
-              <div class="tt-prob-label">Death Chance</div>
-              <div class="tt-prob-pct die" id="ttDiePct">0%</div>
-              <div class="tt-prob-bar-wrap">
-                <div class="tt-prob-bar die" id="ttDieBar" style="width:0%"></div>
+            <div class="rr-prob-box">
+              <div class="rr-prob-label">Incident Risk</div>
+              <div class="rr-prob-pct unsafe" id="rrRiskPct">0%</div>
+              <div class="rr-prob-bar-wrap">
+                <div class="rr-prob-bar unsafe" id="rrRiskBar" style="width:0%"></div>
               </div>
             </div>
           </div>
 
-          <div class="tt-card">
-            <div class="tt-weights-title">Feature Importance</div>
-            <div id="ttWeights"></div>
+          <div class="rr-card">
+            <div class="rr-weights-title">What Factors Matter Most</div>
+            <div id="rrWeights"></div>
           </div>
-
         </div>
 
-        <!-- Placeholder before prediction -->
-        <div class="tt-card" id="ttPlaceholder" style="text-align:center;padding:60px 28px;">
-          <div style="font-size:48px;margin-bottom:16px;">⚓</div>
-          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--steam);margin-bottom:10px;">Your fate awaits</div>
-          <div style="font-size:13px;color:var(--smoke);line-height:1.7;">Fill in your details and click <em>Predict My Fate</em> to see if you would have survived the Titanic.</div>
+        <!-- Placeholder -->
+        <div class="rr-card" id="rrPlaceholder" style="text-align:center;padding:60px 28px;">
+          <div style="font-size:48px;margin-bottom:16px;">🚉</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--steam);margin-bottom:10px;">Your prediction awaits</div>
+          <div style="font-size:13px;color:var(--smoke);line-height:1.7;">Fill in your details and click <em>Check My Safety</em> to see your predicted ride outcome.</div>
         </div>
       </div>
 
@@ -410,117 +425,136 @@ permalink: /railroad/titanic
 <script>
   const BACKEND = 'http://localhost:8587';
 
-  async function ttPredict() {
-    const btn      = document.getElementById('ttPredictBtn');
-    const errorEl  = document.getElementById('ttError');
+  // Weather adjustment factors (applied to base survive probability)
+  const WEATHER = {
+    sunny:  { label: '☀️ Sunny skies — ideal conditions',        delta: +0.05 },
+    cloudy: { label: '⛅ Overcast — slightly reduced visibility', delta: +0.01 },
+    rainy:  { label: '🌧️ Rainy — wet rails, reduced speed',      delta: -0.05 },
+    stormy: { label: '⛈️ Stormy — service may be affected',      delta: -0.10 },
+  };
+
+  // Friendly names for feature weights display
+  const FEATURE_NAMES = {
+    pclass:      'Experience',
+    sex:         'Gender',
+    age:         'Age',
+    sibsp:       'Family',
+    parch:       'Children',
+    fare:        'Ticket Type',
+    alone:       'Solo Rider',
+    embarked_C:  'Route C',
+    embarked_Q:  'Route Q',
+    embarked_S:  'Route S',
+  };
+
+  async function rrPredict() {
+    const btn     = document.getElementById('rrPredictBtn');
+    const errorEl = document.getElementById('rrError');
     errorEl.style.display = 'none';
 
-    // Gather form data
-    const name     = document.getElementById('ttName').value.trim() || 'Passenger';
-    const sex      = document.querySelector('input[name="ttSex"]:checked')?.value || 'female';
-    const age      = parseFloat(document.getElementById('ttAge').value);
-    const pclass   = parseInt(document.getElementById('ttPclass').value);
-    const fare     = parseFloat(document.getElementById('ttFare').value);
-    const embarked = document.getElementById('ttEmbarked').value;
-    const sibsp    = parseInt(document.getElementById('ttSibsp').value) || 0;
-    const parch    = parseInt(document.getElementById('ttParch').value) || 0;
-    const alone    = document.querySelector('input[name="ttAlone"]:checked')?.value === 'true';
+    const name    = document.getElementById('rrName').value.trim() || 'Rider';
+    const sex     = document.querySelector('input[name="rrSex"]:checked')?.value || 'female';
+    const age     = parseFloat(document.getElementById('rrAge').value);
+    const pclass  = parseInt(document.getElementById('rrPclass').value);
+    const sibsp   = parseInt(document.getElementById('rrSibsp').value) || 0;
+    const parch   = parseInt(document.getElementById('rrParch').value) || 0;
+    const alone   = document.querySelector('input[name="rrAlone"]:checked')?.value === 'true';
+    const weather = document.querySelector('input[name="rrWeather"]:checked')?.value || 'sunny';
 
     if (isNaN(age) || age < 1) {
-      ttShowError('Please enter a valid age.'); return;
+      showError('Please enter a valid age.'); return;
     }
 
-    btn.disabled = true;
-    btn.textContent = '⏳ Predicting...';
+    btn.disabled    = true;
+    btn.textContent = '⏳ Analyzing...';
 
     try {
       const res = await fetch(`${BACKEND}/api/titanic/predict`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, pclass, sex, age, sibsp, parch, fare, embarked, alone })
+        body: JSON.stringify({
+          name, pclass, sex, age, sibsp, parch,
+          fare: 14,        // fixed middle value, not shown to user
+          embarked: 'S',   // fixed, not relevant to railroad
+          alone
+        })
       });
 
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
 
-      ttShowResult(name, data);
+      // Apply weather adjustment
+      const weatherCfg = WEATHER[weather];
+      let survive = (data.survive ?? 0) + weatherCfg.delta;
+      let die     = 1 - survive;
+      // Clamp between 0 and 1
+      survive = Math.min(0.99, Math.max(0.01, survive));
+      die     = Math.min(0.99, Math.max(0.01, die));
+
+      showResult(name, survive, die, weatherCfg.label, data.feature_weights);
 
     } catch (err) {
-      ttShowError('Could not reach the backend. Make sure the server is running on localhost:8587.');
+      showError('Could not reach the backend. Make sure the server is running on localhost:8587.');
     } finally {
-      btn.disabled = false;
-      btn.innerHTML = '🔮 Predict My Fate';
+      btn.disabled    = false;
+      btn.innerHTML   = '🔮 Check My Safety';
     }
   }
 
-  function ttShowResult(name, data) {
-    const survive = data.survive ?? data.Survive ?? 0;
-    const die     = data.die     ?? data.Die     ?? 0;
-    const survived = survive >= 0.5;
+  function showResult(name, survive, die, weatherNote, weights) {
+    const safePct = Math.round(survive * 100);
+    const riskPct = Math.round(die * 100);
+    const isSafe  = survive >= 0.5;
 
     // Verdict
-    const verdictEl = document.getElementById('ttVerdict');
-    verdictEl.className = 'tt-verdict ' + (survived ? 'survived' : 'perished');
-    document.getElementById('ttVerdictIcon').textContent  = survived ? '🎉' : '🌊';
-    document.getElementById('ttVerdictTitle').textContent = survived
-      ? `${name} Would Survive!`
-      : `${name} Would Perish`;
-    document.getElementById('ttVerdictSub').textContent = survived
-      ? `The model predicts you would have made it onto a lifeboat and survived the sinking.`
-      : `The model predicts you would not have survived the sinking of the Titanic on April 15, 1912.`;
+    const verdictEl = document.getElementById('rrVerdict');
+    verdictEl.className = 'rr-verdict ' + (isSafe ? 'safe' : 'unsafe');
+    document.getElementById('rrVerdictIcon').textContent  = isSafe ? '✅' : '⚠️';
+    document.getElementById('rrVerdictTitle').textContent = isSafe
+      ? `${name}'s Ride Looks Safe!`
+      : `${name} — Ride with Caution`;
+    document.getElementById('rrVerdictSub').textContent = isSafe
+      ? `Our model predicts a smooth, safe journey on the Poway–Midland Railroad. Enjoy the ride!`
+      : `Conditions suggest a higher risk today. Our staff always prioritize your safety — stay alert and follow crew instructions.`;
+    document.getElementById('rrWeatherNote').textContent = weatherNote;
 
     // Probabilities
-    const survivePct = Math.round(survive * 100);
-    const diePct     = Math.round(die * 100);
-    document.getElementById('ttSurvivePct').textContent = survivePct + '%';
-    document.getElementById('ttDiePct').textContent     = diePct + '%';
+    document.getElementById('rrSafePct').textContent = safePct + '%';
+    document.getElementById('rrRiskPct').textContent = riskPct + '%';
     setTimeout(() => {
-      document.getElementById('ttSurviveBar').style.width = survivePct + '%';
-      document.getElementById('ttDieBar').style.width     = diePct + '%';
+      document.getElementById('rrSafeBar').style.width = safePct + '%';
+      document.getElementById('rrRiskBar').style.width = riskPct + '%';
     }, 50);
 
     // Feature weights
-    const weights = data.weights || data.feature_weights;
-    if (weights) {
-      ttRenderWeights(weights);
-    } else {
-      // Fetch weights separately if not included
-      fetch(`${BACKEND}/api/titanic/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'test', pclass: 2, sex: 'female', age: 25, sibsp: 0, parch: 0, fare: 16, embarked: 'S', alone: true })
-      });
-      document.getElementById('ttWeights').innerHTML = '<div style="font-size:12px;color:var(--smoke);">Feature weights not available from this endpoint.</div>';
-    }
+    if (weights) renderWeights(weights);
 
-    // Show result, hide placeholder
-    document.getElementById('ttPlaceholder').style.display = 'none';
-    const resultEl = document.getElementById('ttResult');
-    resultEl.classList.add('show');
+    document.getElementById('rrPlaceholder').style.display = 'none';
+    document.getElementById('rrResult').classList.add('show');
   }
 
-  function ttRenderWeights(weights) {
+  function renderWeights(weights) {
     const sorted = Object.entries(weights).sort((a,b) => b[1]-a[1]);
-    const max    = sorted[0][1];
+    const max    = sorted[0]?.[1] || 1;
     const html   = sorted.map(([feat, imp]) => {
       const pct  = Math.round(imp * 100);
-      const barW = max > 0 ? Math.round((imp / max) * 100) : 0;
-      const name = feat.replace('embarked_', 'emb_').replace('_', ' ');
+      const barW = Math.round((imp / max) * 100);
+      const name = FEATURE_NAMES[feat] || feat;
       return `
-        <div class="tt-weight-row">
-          <div class="tt-weight-name">${name}</div>
-          <div class="tt-weight-bar-wrap">
-            <div class="tt-weight-bar" style="width:${barW}%"></div>
+        <div class="rr-weight-row">
+          <div class="rr-weight-name">${name}</div>
+          <div class="rr-weight-bar-wrap">
+            <div class="rr-weight-bar" style="width:${barW}%"></div>
           </div>
-          <div class="tt-weight-pct">${pct}%</div>
+          <div class="rr-weight-pct">${pct}%</div>
         </div>`;
     }).join('');
-    document.getElementById('ttWeights').innerHTML = html;
+    document.getElementById('rrWeights').innerHTML = html;
   }
 
-  function ttShowError(msg) {
-    const el = document.getElementById('ttError');
-    el.textContent    = '⚠️ ' + msg;
-    el.style.display  = 'block';
+  function showError(msg) {
+    const el = document.getElementById('rrError');
+    el.textContent   = '⚠️ ' + msg;
+    el.style.display = 'block';
   }
 </script>
