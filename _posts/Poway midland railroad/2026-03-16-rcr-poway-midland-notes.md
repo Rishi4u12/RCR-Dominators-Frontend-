@@ -18,7 +18,6 @@ permalink: /railroad/notes
   }
 
   * { box-sizing: border-box; }
-  body { background: var(--bg); }
 
   .nt-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
 
