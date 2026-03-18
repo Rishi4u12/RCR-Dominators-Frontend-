@@ -329,11 +329,6 @@ permalink: /railroad/home
       <div class="rr-quick-label">Visitor Forecast</div>
       <div class="rr-quick-sub">ML prediction</div>
     </a>
-    <a href="/railroad/titanic" class="rr-quick-card">
-      <span class="rr-quick-icon">🤖</span>
-      <div class="rr-quick-label">Safety Predictor</div>
-      <div class="rr-quick-sub">ML powered</div>
-    </a>
   </div>
 
   <!-- News -->
