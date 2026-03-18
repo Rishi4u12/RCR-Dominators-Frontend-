@@ -1,7 +1,7 @@
 ---
 layout: base
 title: Home page of the project
-permalink: /railroad/home
+permalink: /railroad/notes
 ---
 
 <style>
