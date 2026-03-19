@@ -1,520 +1,150 @@
 <head>
     <title>Site Title</title>
-
     <style>
         .site-header {
             backdrop-filter: blur(30px);
             border-top: 0px solid;
-            border-bottom: 1px solid #404040;
-            background: rgba(50, 50, 50, 0.5);
+            border-bottom: 3px solid #b94a1c;
+            background: rgba(26, 20, 16, 0.95);
             font-weight: bold;
             z-index: 999999999;
-        }
-
-        .site-nav {
-            background-color: transparent;
-        }
-
-        .site-nav .page-link:not(:last-child) {
-            margin-right: 0;
-        }
-
-        #loginArea {
-            margin-left: 20px;
-        }
-
-        .site-title,
-        .site-title:visited,
-        .site-nav,
-        .page-link {
-            font-weight: bolder;
-        }
-
-
-
-        /* Define a mixin for common dropdown styles */
-        /* Apply mixin to dropdown menus */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-            animation: scaleIn 0.3s ease forwards;
-        }
-
-        .dropdown .dropdown-content {
-            display: none;
-            position: fixed;
-            backdrop-filter: blur(30px);
-            background: rgba(50, 50, 50, 0.5);
-            border-radius: 8px;
-            box-shadow: 0px 8px 16px 0px black;
-            overflow: hidden;
-
-            text-align: left;
-            margin-top: -10px;
-            min-width: 140px;
-        }
-
-        .dropdown .dropdown-content a {
-            position: relative;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            color: #ecf0f1;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            border-radius: 8px;
-
-            font-size: 14px;
-            margin-top: -18px;
-            text-align: left;
-        }
-
-        .dropdown .dropdown-content a::after {
-            position: absolute;
-            content: "";
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            bottom: 0;
-        }
-
-        .dropdown .dropdown-content a:hover {
-            color: #95a5a6;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-
-        .dropdown .dropdown-content a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .dropdownp1 {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .dropdownp1:hover .dropdown-content {
-            display: block;
-            animation: scaleIn 0.3s ease forwards;
-        }
-
-        .dropdownp1 .dropdown-content {
-            display: none;
-            position: fixed;
-            backdrop-filter: blur(30px);
-            background: rgba(50, 50, 50, 0.5);
-            border-radius: 8px;
-            box-shadow: 0px 8px 16px 0px black;
-            overflow: hidden;
-        }
-
-        .dropdownp1 .dropdown-content a {
-            position: relative;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            color: #ecf0f1;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .dropdownp1 .dropdown-content a::after {
-            position: absolute;
-            content: "";
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            bottom: 0;
-        }
-
-        .dropdownp1 .dropdown-content a:hover {
-            color: #95a5a6;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-
-        .dropdownp1 .dropdown-content a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .dropdownp2 {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .dropdownp2:hover .dropdown-content {
-            display: block;
-            animation: scaleIn 0.3s ease forwards;
-        }
-
-        .dropdownp2 .dropdown-content {
-            display: none;
-            position: fixed;
-            backdrop-filter: blur(30px);
-            background: rgba(50, 50, 50, 0.5);
-            border-radius: 8px;
-            box-shadow: 0px 8px 16px 0px black;
-            overflow: hidden;
-        }
-
-        .dropdownp2 .dropdown-content a {
-            position: relative;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            color: #ecf0f1;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .dropdownp2 .dropdown-content a::after {
-            position: absolute;
-            content: "";
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            bottom: 0;
-        }
-
-        .dropdownp2 .dropdown-content a:hover {
-            color: #95a5a6;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-
-        .dropdownp2 .dropdown-content a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .dropdownp3 {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .dropdownp3:hover .dropdown-content {
-            display: block;
-            animation: scaleIn 0.3s ease forwards;
-        }
-
-        .dropdownp3 .dropdown-content {
-            display: none;
-            position: fixed;
-            backdrop-filter: blur(30px);
-            background: rgba(50, 50, 50, 0.5);
-            border-radius: 8px;
-            box-shadow: 0px 8px 16px 0px black;
-            overflow: hidden;
-        }
-
-        .dropdownp3 .dropdown-content a {
-            position: relative;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            color: #ecf0f1;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .dropdownp3 .dropdown-content a::after {
-            position: absolute;
-            content: "";
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            bottom: 0;
-        }
-
-        .dropdownp3 .dropdown-content a:hover {
-            color: #95a5a6;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-
-        .dropdownp3 .dropdown-content a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .dropdownp4 {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .dropdownp4:hover .dropdown-content {
-            display: block;
-            animation: scaleIn 0.3s ease forwards;
-        }
-
-        .dropdownp4 .dropdown-content {
-            display: none;
-            position: fixed;
-            backdrop-filter: blur(30px);
-            background: rgba(50, 50, 50, 0.5);
-            border-radius: 8px;
-            box-shadow: 0px 8px 16px 0px black;
-            overflow: hidden;
-        }
-
-        .dropdownp4 .dropdown-content a {
-            position: relative;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            color: #ecf0f1;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .dropdownp4 .dropdown-content a::after {
-            position: absolute;
-            content: "";
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            bottom: 0;
-        }
-
-        .dropdownp4 .dropdown-content a:hover {
-            color: #95a5a6;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-
-        .dropdownp4 .dropdown-content a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        @keyframes scaleIn {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .dropbtn {
-            text-decoration: underline;
-            font-weight: bold;
-        }
-
-
-        .wrapper {
-            max-width: calc(1000px - (30px));
-            margin-right: auto;
-            margin-left: auto;
-            padding-right: 15px;
-            padding-left: 15px;
-        }
-
-        #loginArea>a {
-            text-decoration: none;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .site-header {
-            border-bottom: 1px solid #404040;
             min-height: 55.95px;
             line-height: 54px;
             position: fixed;
             width: 100%;
             top: 0px;
         }
-
+        .site-nav { background-color: transparent; }
+        #loginArea { margin-left: 12px; }
+        .site-header .wrapper { max-width: fit-content !important; }
+        .wrapper {
+            max-width: calc(1000px - 30px);
+            margin-right: auto; margin-left: auto;
+            padding-right: 15px; padding-left: 15px;
+        }
         .site-title {
-            font-size: 1.625rem;
-            /* font-weight: 300; */
-            letter-spacing: -1px;
-            margin-bottom: 0;
-            float: left;
-            font-weight: bold;
+            font-size: 1.625rem; letter-spacing: -1px;
+            margin-bottom: 0; float: left; font-weight: bold;
         }
-
-        @media screen and (max-width: fit-content) {
-            .site-title {
-                padding-right: 45px;
-            }
-        }
-
-        .site-header .wrapper {
-            max-width: fit-content !important;
-        }
-
-        .site-title,
-        .site-title:visited {
-            color: white;
-        }
-
+        .site-title, .site-title:visited { color: white; text-decoration: none; }
         .site-nav {
-            position: absolute;
-            top: 9px;
-            right: 15px;
-            background-color: #181818;
-            border: 1px solid #404040;
-            border-radius: 5px;
-            text-align: right;
+            position: absolute; top: 0; right: 15px;
         }
-
-        .site-nav .nav-trigger {
-            display: none;
-        }
-
-        .site-nav .menu-icon {
-            float: right;
-            width: 36px;
-            height: 26px;
-            line-height: 0;
-            padding-top: 10px;
-            text-align: center;
-        }
-
-        .site-nav .menu-icon>svg path {
-            fill: #999999;
-        }
-
-        .site-nav label[for="nav-trigger"] {
-            display: block;
-            float: right;
-            width: 36px;
-            height: 36px;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .site-nav input~.trigger {
-            clear: both;
-            display: none;
-        }
-
-        .site-nav input:checked~.trigger {
-            display: block;
-            padding-bottom: 5px;
-        }
-
-        .site-nav .page-link {
-            line-height: 1.5;
-            display: block;
-            padding: 5px 10px;
-            margin-left: 20px;
-        }
-
-        .site-nav .page-link:not(:last-child) {
-            margin-right: 0;
-        }
-
         @media screen and (min-width: 1000px) {
-            .site-nav {
-                position: static;
-                float: right;
-                border: none;
-                background-color: inherit;
-            }
-
-            .site-nav label[for="nav-trigger"] {
-                display: none;
-            }
-
-            .site-nav .menu-icon {
-                display: none;
-            }
-
-            .site-nav input~.trigger {
-                display: block;
-            }
-
-            .site-nav .page-link {
-                display: inline;
-                padding: 0;
-                margin-left: auto;
-            }
-
-            .site-nav .page-link:not(:last-child) {
-                margin-left: 20px;
-            }
+            .site-nav { position: static; float: right; border: none; background-color: inherit; }
         }
+
+        /* ── Railroad Nav ── */
+        .rr-nav { display: flex; align-items: center; flex-wrap: nowrap; }
+        .rr-item { position: relative; }
+        .rr-link {
+            display: flex; align-items: center; gap: 5px;
+            color: #e8e0d0 !important; text-decoration: none !important;
+            font-family: 'Courier New', monospace;
+            font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 0 14px; height: 54px; line-height: 54px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s; cursor: pointer; white-space: nowrap;
+            background: none; border-top: none; border-left: none; border-right: none;
+        }
+        .rr-link:hover { color: #c9943a !important; border-bottom-color: #c9943a; }
+        .rr-arr { font-size: 8px; transition: transform 0.2s; }
+        .rr-item.open .rr-arr { transform: rotate(180deg); }
+        .rr-drop {
+            display: none; position: absolute; top: 100%; left: 0;
+            background: rgba(42, 31, 24, 0.98);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top: 2px solid #b94a1c;
+            border-radius: 0 0 8px 8px;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            overflow: hidden; z-index: 200;
+        }
+        .rr-item.open .rr-drop { display: block; animation: rrIn 0.2s ease; }
+        @keyframes rrIn { from{opacity:0;transform:translateY(-4px);} to{opacity:1;transform:none;} }
+        .rr-drop a {
+            display: block; padding: 11px 18px;
+            color: #8c7f6e !important; text-decoration: none !important;
+            font-family: 'Courier New', monospace;
+            font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+            transition: all 0.15s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .rr-drop a:last-child { border-bottom: none; }
+        .rr-drop a:hover { background: rgba(201,148,58,0.15); color: #c9943a !important; padding-left: 24px; }
+        @media screen and (max-width: 999px) { .rr-nav { display: none; } }
     </style>
 </head>
 
 <body>
     <header class="site-header">
         <div class="wrapper">
-            {%- assign default_paths = site.pages | map: "path" -%}
-            {%- assign page_paths = site.minima.nav_pages | default: default_paths -%}
-            {%- assign titles_size = site.pages | map: 'title' | join: '' | size -%}
-            <a class="site-title" rel="author" href="{{ "/" | relative_url }}" data-value="{{ site.title | escape }}">
-                <img src="{{ site.baseurl }}/images/logo.png" alt="Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+            <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
+                <img src="{{ site.baseurl }}/assets/images/PMRR-Logo.png" alt="Poway Midland Railroad" style="height:44px;vertical-align:middle;margin-right:10px;">
             </a>
 
-            {%- if titles_size > 0 -%}
             <nav class="site-nav">
-                <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-                <label for="nav-trigger">
-                    <span class="menu-icon">
-                        <svg viewBox="0 0 18 15" width="18px" height="15px">
-                            <path
-                                d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z" />
-                        </svg>
-                    </span>
-                </label>
+                <div class="rr-nav">
 
-                <div class="trigger">
-                    {%- for path in site.minima.nav_pages -%}
-                    {%- assign my_page = site.pages | where: "path", path | first -%}
-                    {%- if my_page.title -%}
-                    <a class="page-link" href="{{ my_page.url | relative_url }}">
-                        {%- if my_page.course -%}
-                        {{ my_page.course | upcase | escape }}
-                        {%- else -%}
-                        {{ my_page.title | escape }}
-                        {%- endif -%}
-                    </a>
-                    {%- endif -%}
-                    {%- endfor -%}
-                    <a id="loginArea" href="{{ site.baseurl }}/login">Login</a>
+                    <div class="rr-item">
+                        <a href="/railroad/home" class="rr-link">🏠 Home</a>
+                    </div>
+
+                    <div class="rr-item" id="rrSched">
+                        <button class="rr-link" onclick="toggleRR('rrSched')">
+                            📅 Schedule <span class="rr-arr">▼</span>
+                        </button>
+                        <div class="rr-drop">
+                            <a href="/railroad/schedule">🚂 Train Schedule</a>
+                            <a href="#">👷 Volunteer Schedule</a>
+                        </div>
+                    </div>
+
+                    <div class="rr-item">
+                        <a href="/railroad/notes" class="rr-link">📸 Notes</a>
+                    </div>
+
+                    <div class="rr-item" id="rrAbout">
+                        <button class="rr-link" onclick="toggleRR('rrAbout')">
+                            ℹ️ About Us <span class="rr-arr">▼</span>
+                        </button>
+                        <div class="rr-drop">
+                            <a href="/railroad/trains">🚂 Our Trains</a>
+                            <a href="#">📖 History</a>
+                        </div>
+                    </div>
+
+                    <div class="rr-item">
+                        <a href="#" class="rr-link">🎥 Live Camera</a>
+                    </div>
+
+                    <div class="rr-item">
+                        <a href="#" class="rr-link">🤝 Membership</a>
+                    </div>
+
+                    <div class="rr-item">
+                        <a href="/railroad/forecast" class="rr-link">📊 Forecast</a>
+                    </div>
+
+                    <a id="loginArea" href="{{ site.baseurl }}/login" class="rr-link">Login</a>
+
                 </div>
             </nav>
-            {%- endif -%}
         </div>
     </header>
+
+    <script>
+        function toggleRR(id) {
+            const item = document.getElementById(id);
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.rr-item.open').forEach(el => el.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        }
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.rr-item'))
+                document.querySelectorAll('.rr-item.open').forEach(el => el.classList.remove('open'));
+        });
+    </script>
 
     <script type="module" src="{{ site.baseurl }}/assets/js/api/login.js"></script>
 </body>
