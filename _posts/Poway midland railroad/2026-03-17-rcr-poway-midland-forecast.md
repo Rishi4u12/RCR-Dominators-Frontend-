@@ -135,17 +135,6 @@ permalink: /railroad/forecast
       </div>
     </div>
 
-    <!-- Optional events -->
-    <div class="fc-card">
-      <div class="fc-card-title">🎪 Any Special Events Tomorrow? <span style="font-size:11px;color:var(--smoke);font-weight:400;">(optional)</span></div>
-      <div class="fc-event-grid">
-        <label class="fc-event-btn"><input type="checkbox" id="evFestival"> 🎉 Holiday Festival</label>
-        <label class="fc-event-btn"><input type="checkbox" id="evHalloween"> 🎃 Halloween Event</label>
-        <label class="fc-event-btn"><input type="checkbox" id="evEaster"> 🐰 Easter Event</label>
-        <label class="fc-event-btn"><input type="checkbox" id="evThomas"> 🚂 Thomas Train Day</label>
-      </div>
-    </div>
-
     <button class="fc-btn" id="fcBtn" onclick="fcPredict()">📈 Generate Forecast</button>
     <div class="fc-error" id="fcError"></div>
 
@@ -184,16 +173,42 @@ permalink: /railroad/forecast
 const BACKEND = 'http://localhost:8587';
 const LAT = 32.9728, LON = -117.0359;
 
+// ── US Federal Holidays + CA observances 2025–2027 ────────────────────────
 const HOLIDAYS = {
+  // 2025
+  '2025-01-01':"New Year's Day 🎆",'2025-01-20':'MLK Jr. Day',
+  '2025-02-17':"Presidents' Day",'2025-04-18':'Good Friday',
+  '2025-04-20':'Easter Sunday 🐰','2025-05-26':'Memorial Day',
+  '2025-07-04':'Independence Day 🎆','2025-09-01':'Labor Day',
+  '2025-10-31':'Halloween 🎃','2025-11-11':'Veterans Day',
+  '2025-11-27':'Thanksgiving 🦃','2025-12-24':'Christmas Eve',
+  '2025-12-25':'Christmas 🎄','2025-12-31':"New Year's Eve",
+  // 2026
   '2026-01-01':"New Year's Day 🎆",'2026-01-19':'MLK Jr. Day',
-  '2026-02-16':"Presidents' Day",'2026-05-25':'Memorial Day',
+  '2026-02-16':"Presidents' Day",'2026-04-03':'Good Friday',
+  '2026-04-05':'Easter Sunday 🐰','2026-05-25':'Memorial Day',
   '2026-07-04':'Independence Day 🎆','2026-09-07':'Labor Day',
-  '2026-11-11':'Veterans Day','2026-11-26':'Thanksgiving 🦃',
+  '2026-10-31':'Halloween 🎃','2026-11-11':'Veterans Day',
+  '2026-11-26':'Thanksgiving 🦃','2026-12-24':'Christmas Eve',
   '2026-12-25':'Christmas 🎄','2026-12-31':"New Year's Eve",
+  // 2027
+  '2027-01-01':"New Year's Day 🎆",'2027-01-18':'MLK Jr. Day',
+  '2027-02-15':"Presidents' Day",'2027-03-26':'Good Friday',
+  '2027-03-28':'Easter Sunday 🐰','2027-05-31':'Memorial Day',
+  '2027-07-04':'Independence Day 🎆','2027-09-06':'Labor Day',
+  '2027-10-31':'Halloween 🎃','2027-11-11':'Veterans Day',
+  '2027-11-25':'Thanksgiving 🦃','2027-12-24':'Christmas Eve',
+  '2027-12-25':'Christmas 🎄','2027-12-31':"New Year's Eve",
 };
+
 const SCHOOL_BREAKS = [
-  ['2026-03-30','2026-04-06'],['2026-06-11','2026-08-14'],
-  ['2025-12-22','2026-01-05'],
+  // Poway USD approximate breaks
+  ['2025-06-12','2025-08-14'],['2025-03-31','2025-04-07'],
+  ['2024-12-23','2025-01-05'],['2025-11-24','2025-11-28'],
+  ['2026-03-30','2026-04-06'],['2026-06-11','2026-08-13'],
+  ['2025-12-22','2026-01-05'],['2026-11-23','2026-11-27'],
+  ['2027-03-29','2027-04-05'],['2027-06-10','2027-08-12'],
+  ['2026-12-21','2027-01-04'],
 ];
 
 const BUCKETS_SAT = [
@@ -319,10 +334,7 @@ async function fcPredict(){
   const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
   const month=tomorrow.getMonth()+1, dom=tomorrow.getDate();
   const isSat=fcData.isSat;
-  const hasEvent=document.getElementById('evFestival').checked
-               ||document.getElementById('evHalloween').checked
-               ||document.getElementById('evEaster').checked
-               ||document.getElementById('evThomas').checked;
+  const hasEvent = false;
 
   const slotIdx=parseInt(document.querySelector('input[name="fcSlot"]:checked')?.value||1);
   const buckets=isSat?BUCKETS_SAT:BUCKETS_SUN;
