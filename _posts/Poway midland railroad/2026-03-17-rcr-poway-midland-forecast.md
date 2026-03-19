@@ -1,424 +1,425 @@
 ---
 layout: base
-title: Visitor Forecast
+title: Tomorrow's Visitor Forecast
 permalink: /railroad/forecast
 ---
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --coal:#1a1410;--iron:#2e2620;--iron2:#3a2e28;
-    --rust:#b94a1c;--ember:#e8621a;--gold:#c9943a;
-    --steam:#e8e0d0;--smoke:#8c7f6e;--green:#2d6a4f;
-  }
+  :root{--coal:#1a1410;--iron:#2e2620;--iron2:#3a2e28;--rust:#b94a1c;--ember:#e8621a;--gold:#c9943a;--steam:#e8e0d0;--smoke:#8c7f6e;}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  .vc-page{background:var(--coal);min-height:100vh;font-family:'Source Serif 4',Georgia,serif;color:var(--steam);}
+  .fc-page{background:var(--coal);min-height:100vh;font-family:'Source Serif 4',Georgia,serif;color:var(--steam);}
 
-  /* Hero */
-  .vc-hero{position:relative;padding:60px 24px 48px;text-align:center;
-    background:linear-gradient(180deg,#2a1a0e 0%,var(--coal) 100%);overflow:hidden;}
-  .vc-hero-icon{font-size:64px;display:block;margin-bottom:14px;
-    animation:vc-bounce 2s ease-in-out infinite;}
-  @keyframes vc-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-  .vc-hero-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.3em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:12px;opacity:0.8;}
-  .vc-hero-title{font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,64px);
-    font-weight:900;line-height:1;margin-bottom:8px;}
-  .vc-hero-title em{font-style:italic;color:var(--ember);}
-  .vc-hero-sub{font-size:14px;color:var(--smoke);max-width:520px;margin:10px auto 0;
-    line-height:1.7;font-weight:300;}
+  .fc-hero{position:relative;padding:50px 24px 40px;text-align:center;background:linear-gradient(180deg,#2a1a0e 0%,var(--coal) 100%);}
+  .fc-hero-icon{font-size:60px;display:block;margin-bottom:12px;animation:fc-chug 2.5s ease-in-out infinite;}
+  @keyframes fc-chug{0%,100%{transform:translateX(0);}25%{transform:translateX(3px);}75%{transform:translateX(-3px);}}
+  .fc-hero-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:0.8;}
+  .fc-hero-title{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,56px);font-weight:900;line-height:1;margin-bottom:8px;}
+  .fc-hero-title em{font-style:italic;color:var(--ember);}
+  .fc-hero-sub{font-size:14px;color:var(--smoke);max-width:500px;margin:8px auto 0;line-height:1.7;font-weight:300;}
 
-  /* Layout */
-  .vc-wrap{max-width:980px;margin:0 auto;padding:36px 20px 80px;}
-  .vc-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-  @media(max-width:700px){.vc-cols{grid-template-columns:1fr;}}
+  .fc-wrap{max-width:1000px;margin:0 auto;padding:32px 20px 80px;}
 
-  /* Card */
-  .vc-card{background:var(--iron);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:26px;}
-  .vc-card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;
-    color:var(--gold);margin-bottom:18px;padding-bottom:12px;
-    border-bottom:1px solid rgba(255,255,255,0.08);}
+  /* Date banner */
+  .fc-date-banner{background:var(--iron);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;border-left:4px solid var(--gold);}
+  .fc-date-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--smoke);margin-bottom:4px;}
+  .fc-date-value{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);font-weight:700;color:var(--steam);}
+  .fc-date-holiday{font-size:13px;color:var(--gold);margin-top:4px;font-family:'DM Mono',monospace;letter-spacing:0.05em;}
+  .fc-weather-panel{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .fc-wx-item{text-align:center;}
+  .fc-wx-icon{font-size:28px;display:block;}
+  .fc-wx-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke);margin-top:3px;}
+  .fc-wx-val{font-size:15px;font-weight:700;color:var(--steam);}
+  .fc-wx-loading{font-family:'DM Mono',monospace;font-size:11px;color:var(--smoke);animation:blink 1s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-  /* Fields */
-  .vc-field{margin-bottom:14px;}
-  .vc-field label{display:block;font-family:'DM Mono',monospace;font-size:10px;
-    letter-spacing:0.15em;text-transform:uppercase;color:var(--smoke);margin-bottom:6px;}
-  .vc-field select,.vc-field input{width:100%;padding:10px 14px;
-    background:var(--iron2);border:1px solid rgba(255,255,255,0.1);border-radius:6px;
-    color:var(--steam);font-family:'Source Serif 4',serif;font-size:14px;transition:border-color 0.2s;}
-  .vc-field select:focus,.vc-field input:focus{outline:none;border-color:var(--gold);
-    box-shadow:0 0 0 3px rgba(201,148,58,0.15);}
-  .vc-field select option{background:var(--iron2);}
-  .vc-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fc-card{background:var(--iron);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:22px;margin-bottom:18px;}
+  .fc-card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);}
 
-  /* Toggle */
-  .vc-toggle{display:flex;gap:8px;flex-wrap:wrap;}
-  .vc-toggle-btn{flex:1;min-width:80px;display:flex;align-items:center;justify-content:center;
-    gap:6px;padding:9px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
-    background:var(--iron2);cursor:pointer;font-size:13px;color:var(--smoke);transition:all 0.2s;}
-  .vc-toggle-btn:has(input:checked){border-color:var(--gold);color:var(--gold);background:rgba(201,148,58,0.12);}
-  .vc-toggle-btn input{display:none;}
+  /* Time grid */
+  .fc-time-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+  .fc-time-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:var(--iron2);cursor:pointer;transition:all 0.2s;}
+  .fc-time-btn:has(input:checked){border-color:var(--gold);background:rgba(201,148,58,0.15);}
+  .fc-time-btn input{display:none;}
+  .fc-time-label{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--steam);}
+  .fc-time-temp{font-size:11px;color:var(--smoke);}
+  .fc-time-busy{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.05em;}
+  .busy-low{color:#4caf82;}.busy-mid{color:#f59e0b;}.busy-peak{color:#ef4444;}
 
-  /* Weather grid */
-  .vc-weather{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-  .vc-weather-btn{display:flex;flex-direction:column;align-items:center;gap:4px;
-    padding:10px 6px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
-    background:var(--iron2);cursor:pointer;font-family:'DM Mono',monospace;font-size:9px;
-    letter-spacing:0.08em;text-transform:uppercase;color:var(--smoke);transition:all 0.2s;}
-  .vc-weather-btn:has(input:checked){border-color:var(--gold);color:var(--gold);background:rgba(201,148,58,0.12);}
-  .vc-weather-btn input{display:none;}
-  .vc-wi{font-size:22px;}
+  /* Event checkboxes */
+  .fc-event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+  .fc-event-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:var(--iron2);cursor:pointer;font-size:13px;color:var(--smoke);transition:all 0.2s;}
+  .fc-event-btn:has(input:checked){border-color:var(--gold);color:var(--gold);background:rgba(201,148,58,0.12);}
+  .fc-event-btn input{display:none;}
 
-  /* Temperature slider */
-  .vc-temp-display{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;
-    color:var(--gold);text-align:center;margin-bottom:8px;}
-  .vc-temp-desc{font-size:11px;color:var(--smoke);text-align:center;margin-bottom:8px;font-family:'DM Mono',monospace;}
-  input[type=range]{width:100%;accent-color:var(--gold);}
+  .fc-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rust),var(--ember));border:none;border-radius:8px;color:#fff;font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+  .fc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(185,74,28,0.4);}
+  .fc-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
-  /* Checkbox style */
-  .vc-check-group{display:flex;gap:8px;flex-wrap:wrap;}
-  .vc-check-btn{flex:1;min-width:120px;display:flex;align-items:center;gap:8px;
-    padding:10px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
-    background:var(--iron2);cursor:pointer;font-size:12px;color:var(--smoke);transition:all 0.2s;}
-  .vc-check-btn:has(input:checked){border-color:var(--gold);color:var(--gold);background:rgba(201,148,58,0.12);}
-  .vc-check-btn input{display:none;}
+  .fc-result{display:none;}
+  .fc-result.show{display:block;animation:fc-fade 0.5s ease;}
+  @keyframes fc-fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
 
-  /* Predict button */
-  .vc-btn{width:100%;padding:14px;margin-top:6px;
-    background:linear-gradient(135deg,var(--rust),var(--ember));
-    border:none;border-radius:8px;color:#fff;font-family:'DM Mono',monospace;
-    font-size:13px;letter-spacing:0.1em;text-transform:uppercase;
-    cursor:pointer;transition:all 0.2s;}
-  .vc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(185,74,28,0.4);}
-  .vc-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+  /* Big number */
+  .fc-big{background:linear-gradient(135deg,rgba(185,74,28,0.25),rgba(185,74,28,0.05));border:1px solid rgba(185,74,28,0.4);border-radius:14px;padding:32px;text-align:center;margin-bottom:18px;}
+  .fc-big-time{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .fc-big-num{font-family:'Playfair Display',serif;font-size:clamp(56px,10vw,88px);font-weight:900;color:var(--ember);line-height:1;}
+  .fc-big-unit{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--smoke);margin-top:6px;}
+  .fc-crowd-wrap{margin-top:20px;}
+  .fc-crowd-sublabel{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--smoke);margin-bottom:8px;}
+  .fc-crowd-bar-bg{height:14px;background:rgba(255,255,255,0.08);border-radius:7px;overflow:hidden;}
+  .fc-crowd-bar-fill{height:100%;border-radius:7px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+  .fc-crowd-pct-text{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-top:8px;}
 
-  /* Result */
-  .vc-result{display:none;}
-  .vc-result.show{display:block;animation:vc-fade 0.5s ease;}
-  @keyframes vc-fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  /* Factors */
+  .fc-factors{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .fc-factor{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:20px;border:1px solid;text-transform:uppercase;}
+  .fc-factor.pos{background:rgba(45,106,79,0.15);color:#4caf82;border-color:rgba(76,175,130,0.3);}
+  .fc-factor.neg{background:rgba(185,74,28,0.15);color:#fb923c;border-color:rgba(185,74,28,0.3);}
+  .fc-factor.neu{background:rgba(255,255,255,0.05);color:var(--smoke);border-color:rgba(255,255,255,0.1);}
 
-  .vc-big{background:linear-gradient(135deg,rgba(185,74,28,0.2),rgba(185,74,28,0.05));
-    border:1px solid rgba(185,74,28,0.3);border-radius:12px;padding:28px;text-align:center;margin-bottom:16px;}
-  .vc-big-num{font-family:'Playfair Display',serif;font-size:clamp(52px,10vw,80px);
-    font-weight:900;color:var(--ember);line-height:1;}
-  .vc-big-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;
-    text-transform:uppercase;color:var(--smoke);margin-top:6px;}
-  .vc-big-sub{font-size:13px;color:var(--smoke);margin-top:10px;line-height:1.5;}
+  .fc-tip{border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:13px;line-height:1.6;}
+  .fc-tip.busy{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;}
+  .fc-tip.mod{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fcd34d;}
+  .fc-tip.quiet{background:rgba(45,106,79,0.15);border:1px solid rgba(76,175,130,0.3);color:#a7f3d0;}
 
-  /* Factor badges */
-  .vc-factors{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
-  .vc-factor{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;
-    padding:5px 12px;border-radius:20px;border:1px solid;text-transform:uppercase;}
-  .vc-factor.positive{background:rgba(45,106,79,0.15);color:#4caf82;border-color:rgba(76,175,130,0.3);}
-  .vc-factor.negative{background:rgba(185,74,28,0.15);color:#fb923c;border-color:rgba(185,74,28,0.3);}
-  .vc-factor.neutral{background:rgba(255,255,255,0.05);color:var(--smoke);border-color:rgba(255,255,255,0.1);}
+  /* Hourly chart */
+  .fc-hour-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .fc-hour-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--smoke);width:70px;flex-shrink:0;text-align:right;}
+  .fc-hour-bar-bg{flex:1;height:22px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+  .fc-hour-bar{height:100%;border-radius:4px;transition:width 1s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;padding-left:8px;}
+  .fc-hour-txt{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.85);white-space:nowrap;}
+  .fc-hour-temp{font-family:'DM Mono',monospace;font-size:10px;color:var(--smoke);width:38px;flex-shrink:0;}
+  .fc-active-hour .fc-hour-time{color:var(--gold);font-weight:700;}
 
-  .vc-occ{background:var(--iron2);border-radius:8px;padding:16px;margin-bottom:16px;
-    border:1px solid rgba(255,255,255,0.07);}
-  .vc-occ-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-  .vc-occ-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--smoke);}
-  .vc-occ-pct{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
-  .vc-occ-bar-wrap{height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;}
-  .vc-occ-bar{height:100%;border-radius:5px;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+  /* Feature weights */
+  .fc-wt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .fc-wt::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08);}
+  .fc-wr{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .fc-wn{font-family:'DM Mono',monospace;font-size:10px;color:var(--smoke);width:120px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.05em;}
+  .fc-wb-bg{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+  .fc-wb{height:100%;border-radius:4px;background:var(--gold);opacity:0.7;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+  .fc-wp{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);width:36px;text-align:right;flex-shrink:0;}
 
-  .vc-tip{background:rgba(45,106,79,0.15);border:1px solid rgba(76,175,130,0.3);
-    border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:#a7f3d0;line-height:1.6;}
-  .vc-tip strong{color:#4caf82;}
-
-  .vc-weights-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:12px;
-    display:flex;align-items:center;gap:8px;}
-  .vc-weights-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08);}
-  .vc-wrow{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
-  .vc-wname{font-family:'DM Mono',monospace;font-size:10px;color:var(--smoke);
-    width:120px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.05em;}
-  .vc-wbar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
-  .vc-wbar{height:100%;border-radius:4px;background:var(--gold);opacity:0.7;
-    transition:width 1s cubic-bezier(0.4,0,0.2,1);}
-  .vc-wpct{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);width:36px;text-align:right;flex-shrink:0;}
-
-  .vc-error{display:none;margin-top:12px;padding:12px 16px;
-    background:rgba(127,29,29,0.3);border:1px solid rgba(185,74,28,0.4);
-    border-radius:8px;font-size:13px;color:#fca5a5;}
-
-  .vc-info{background:var(--iron);border:1px solid rgba(255,255,255,0.07);
-    border-left:4px solid var(--rust);border-radius:12px;padding:18px;margin-bottom:22px;}
-  .vc-info-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:7px;}
-  .vc-info-text{font-size:13px;color:var(--smoke);line-height:1.7;font-weight:300;}
-  .vc-info-text strong{color:var(--steam);}
+  .fc-error{display:none;margin-top:12px;padding:12px 16px;background:rgba(127,29,29,0.3);border:1px solid rgba(185,74,28,0.4);border-radius:8px;font-size:13px;color:#fca5a5;}
 </style>
 
-<div class="vc-page">
-  <div class="vc-hero">
-    <span class="vc-hero-icon">📊</span>
-    <div class="vc-hero-tag">Machine Learning · Poway–Midland Railroad</div>
-    <h1 class="vc-hero-title">Visitor<br><em>Forecast</em></h1>
-    <p class="vc-hero-sub">Pick your conditions — our ML model predicts how many visitors PMRR will see that day, factoring in weather, temperature, school breaks, and more.</p>
+<div class="fc-page">
+  <div class="fc-hero">
+    <span class="fc-hero-icon">🚂</span>
+    <div class="fc-hero-tag">ML Powered · Poway–Midland Railroad</div>
+    <h1 class="fc-hero-title">Tomorrow's<br><em>Crowd Forecast</em></h1>
+    <p class="fc-hero-sub">Real weather data + machine learning. Know how busy PMRR will be before you arrive — down to the hour.</p>
   </div>
 
-  <div class="vc-wrap">
-    <div class="vc-info">
-      <div class="vc-info-title">🤖 How It Works</div>
-      <div class="vc-info-text">
-        <strong>Gradient Boosting Regressor</strong> trained on 277 PMRR operating days (2023–2025).
-        Features: <strong>month · day of month · weather · temperature · train type · school breaks · special events · holidays · ride schedule</strong>.
-        More features = better predictions.
-      </div>
-    </div>
+  <div class="fc-wrap">
 
-    <div class="vc-cols">
-
-      <!-- Form -->
-      <div class="vc-card">
-        <div class="vc-card-title">🗓 Predict a Day</div>
-
-        <div class="vc-field-row">
-          <div class="vc-field">
-            <label>Month</label>
-            <select id="vcMonth" onchange="vcUpdateTemp()">
-              <option value="1">January</option><option value="2">February</option>
-              <option value="3">March</option><option value="4">April</option>
-              <option value="5">May</option><option value="6">June</option>
-              <option value="7">July</option><option value="8">August</option>
-              <option value="9">September</option><option value="10">October</option>
-              <option value="11">November</option><option value="12">December</option>
-            </select>
-          </div>
-          <div class="vc-field">
-            <label>Day of Month</label>
-            <input type="number" id="vcDay" min="1" max="31" value="15">
-          </div>
-        </div>
-
-        <div class="vc-field">
-          <label>Day Type</label>
-          <div class="vc-toggle">
-            <label class="vc-toggle-btn">
-              <input type="radio" name="vcDayType" value="saturday" checked onchange="vcUpdateTrainField()"> 🚂 Saturday (Steam)
-            </label>
-            <label class="vc-toggle-btn">
-              <input type="radio" name="vcDayType" value="sunday" onchange="vcUpdateTrainField()"> 🚌 Sunday
-            </label>
-          </div>
-        </div>
-
-        <div class="vc-field" id="vcTrainField" style="display:none;">
-          <label>Train Type (Sunday)</label>
-          <div class="vc-toggle">
-            <label class="vc-toggle-btn"><input type="radio" name="vcTrain" value="cable" checked> 🚌 Cable Car</label>
-            <label class="vc-toggle-btn"><input type="radio" name="vcTrain" value="speeder"> 🚃 Speeder</label>
-          </div>
-        </div>
-
-        <div class="vc-field">
-          <label>Weather</label>
-          <div class="vc-weather">
-            <label class="vc-weather-btn"><input type="radio" name="vcWeather" value="sunny" checked><span class="vc-wi">☀️</span>Sunny</label>
-            <label class="vc-weather-btn"><input type="radio" name="vcWeather" value="cloudy"><span class="vc-wi">⛅</span>Cloudy</label>
-            <label class="vc-weather-btn"><input type="radio" name="vcWeather" value="rainy"><span class="vc-wi">🌧️</span>Rainy</label>
-            <label class="vc-weather-btn"><input type="radio" name="vcWeather" value="windy"><span class="vc-wi">💨</span>Windy</label>
-          </div>
-        </div>
-
-        <div class="vc-field">
-          <label>Temperature (°F)</label>
-          <div class="vc-temp-display" id="vcTempDisplay">75°F</div>
-          <div class="vc-temp-desc" id="vcTempDesc">😊 Mild — ideal conditions</div>
-          <input type="range" id="vcTemp" min="45" max="105" value="75" oninput="vcUpdateTempDisplay()">
-        </div>
-
-        <div class="vc-field">
-          <label>Special Conditions</label>
-          <div class="vc-check-group">
-            <label class="vc-check-btn"><input type="checkbox" id="vcHoliday"> 🎉 Public Holiday</label>
-            <label class="vc-check-btn"><input type="checkbox" id="vcSchoolBreak"> 🏫 School Break</label>
-            <label class="vc-check-btn"><input type="checkbox" id="vcEvent"> 🎪 Special Event</label>
-          </div>
-        </div>
-
-        <button class="vc-btn" id="vcBtn" onclick="vcPredict()">📈 Forecast Visitors</button>
-        <div class="vc-error" id="vcError"></div>
-      </div>
-
-      <!-- Result -->
+    <!-- Auto date + live weather -->
+    <div class="fc-date-banner">
       <div>
-        <div class="vc-result" id="vcResult">
-          <div class="vc-big">
-            <div class="vc-big-num" id="vcNum">—</div>
-            <div class="vc-big-label">Predicted Visitors</div>
-            <div class="vc-big-sub" id="vcBigSub"></div>
-          </div>
+        <div class="fc-date-label">Forecasting for</div>
+        <div class="fc-date-value" id="fcDateVal">Loading...</div>
+        <div class="fc-date-holiday" id="fcHolidayBadge"></div>
+      </div>
+      <div class="fc-weather-panel" id="fcWeatherPanel">
+        <span class="fc-wx-loading">⟳ Fetching Poway weather...</span>
+      </div>
+    </div>
 
-          <div class="vc-factors" id="vcFactors"></div>
+    <!-- Time selector -->
+    <div class="fc-card">
+      <div class="fc-card-title">⏰ When Are You Arriving?</div>
+      <div class="fc-time-grid" id="fcTimeGrid">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--smoke);">Loading...</div>
+      </div>
+    </div>
 
-          <div class="vc-occ">
-            <div class="vc-occ-header">
-              <div class="vc-occ-label">Estimated Occupancy</div>
-              <div class="vc-occ-pct" id="vcOccPct" style="color:var(--ember)">—</div>
-            </div>
-            <div class="vc-occ-bar-wrap">
-              <div class="vc-occ-bar" id="vcOccBar" style="width:0%"></div>
-            </div>
-          </div>
+    <!-- Optional events -->
+    <div class="fc-card">
+      <div class="fc-card-title">🎪 Any Special Events Tomorrow? <span style="font-size:11px;color:var(--smoke);font-weight:400;">(optional)</span></div>
+      <div class="fc-event-grid">
+        <label class="fc-event-btn"><input type="checkbox" id="evFestival"> 🎉 Holiday Festival</label>
+        <label class="fc-event-btn"><input type="checkbox" id="evHalloween"> 🎃 Halloween Event</label>
+        <label class="fc-event-btn"><input type="checkbox" id="evEaster"> 🐰 Easter Event</label>
+        <label class="fc-event-btn"><input type="checkbox" id="evThomas"> 🚂 Thomas Train Day</label>
+      </div>
+    </div>
 
-          <div class="vc-tip" id="vcTip"></div>
+    <button class="fc-btn" id="fcBtn" onclick="fcPredict()">📈 Generate Forecast</button>
+    <div class="fc-error" id="fcError"></div>
 
-          <div class="vc-card">
-            <div class="vc-weights-title">What Drives Predictions</div>
-            <div id="vcWeights"></div>
-          </div>
-        </div>
-
-        <div class="vc-card" id="vcPlaceholder" style="text-align:center;padding:60px 28px;">
-          <div style="font-size:48px;margin-bottom:16px;">🚉</div>
-          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--steam);margin-bottom:10px;">Awaiting your input</div>
-          <div style="font-size:13px;color:var(--smoke);line-height:1.7;">Select conditions and click <em>Forecast Visitors</em>.</div>
+    <!-- Result -->
+    <div class="fc-result" id="fcResult">
+      <div class="fc-big">
+        <div class="fc-big-time" id="fcBigTime"></div>
+        <div class="fc-big-num"  id="fcBigNum">—</div>
+        <div class="fc-big-unit">estimated visitors</div>
+        <div class="fc-crowd-wrap">
+          <div class="fc-crowd-sublabel">Crowd Level</div>
+          <div class="fc-crowd-bar-bg"><div class="fc-crowd-bar-fill" id="fcCrowdFill" style="width:0%"></div></div>
+          <div class="fc-crowd-pct-text" id="fcCrowdPct"></div>
         </div>
       </div>
 
+      <div class="fc-factors" id="fcFactors"></div>
+      <div class="fc-tip" id="fcTip"></div>
+
+      <div class="fc-card">
+        <div class="fc-card-title">📊 Full Day Breakdown</div>
+        <div id="fcHourly"></div>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-card-title">🤖 Feature Importance</div>
+        <div class="fc-wt">What the model learned</div>
+        <div id="fcWeights"></div>
+      </div>
     </div>
+
   </div>
 </div>
 
 <script>
-  const BACKEND = 'http://localhost:8587';
+const BACKEND = 'http://localhost:8587';
+const LAT = 32.9728, LON = -117.0359;
 
-  const POWAY_AVG_TEMP = {1:65,2:67,3:70,4:73,5:76,6:82,7:90,8:91,9:87,10:80,11:72,12:65};
+const HOLIDAYS = {
+  '2026-01-01':"New Year's Day 🎆",'2026-01-19':'MLK Jr. Day',
+  '2026-02-16':"Presidents' Day",'2026-05-25':'Memorial Day',
+  '2026-07-04':'Independence Day 🎆','2026-09-07':'Labor Day',
+  '2026-11-11':'Veterans Day','2026-11-26':'Thanksgiving 🦃',
+  '2026-12-25':'Christmas 🎄','2026-12-31':"New Year's Eve",
+};
+const SCHOOL_BREAKS = [
+  ['2026-03-30','2026-04-06'],['2026-06-11','2026-08-14'],
+  ['2025-12-22','2026-01-05'],
+];
 
-  const FEATURE_NAMES = {
-    is_saturday:'Saturday',day_of_month:'Day of Month',weather_sunny:'Sunny Weather',
-    rides:'No. of Rides',capacity:'Capacity',train_steam:'Steam Loco',
-    month:'Month',temperature:'Temperature',is_school_break:'School Break',
-    has_event:'Special Event',is_holiday:'Holiday',weather_rainy:'Rainy',
-    weather_cloudy:'Cloudy',weather_windy:'Windy',train_cable:'Cable Car',
-    train_speeder:'Speeder',temp_mild:'Mild Temp',temp_warm:'Warm Temp',
-    temp_hot:'Hot Temp',temp_cold:'Cold Temp',
-  };
+const BUCKETS_SAT = [
+  {label:'10–11 AM',start:10,peak:0.55},
+  {label:'11 AM–12 PM',start:11,peak:0.85},
+  {label:'12–1 PM',start:12,peak:1.00},
+  {label:'1–2 PM',start:13,peak:0.75},
+];
+const BUCKETS_SUN = [
+  {label:'11 AM–12 PM',start:11,peak:0.80},
+  {label:'12–1 PM',start:12,peak:1.00},
+  {label:'1–2 PM',start:13,peak:0.70},
+];
 
-  function vcUpdateTrainField() {
-    const isSat = document.querySelector('input[name="vcDayType"]:checked').value === 'saturday';
-    document.getElementById('vcTrainField').style.display = isSat ? 'none' : 'block';
+const FEAT_NAMES = {
+  is_saturday:'Saturday',day_of_month:'Day of Month',weather_sunny:'Sunny',
+  rides:'No. Rides',capacity:'Capacity',train_steam:'Steam Loco',
+  month:'Month',temperature:'Temperature',is_school_break:'School Break',
+  has_event:'Special Event',is_holiday:'Holiday',weather_rainy:'Rainy',
+  weather_cloudy:'Cloudy',weather_windy:'Windy',train_cable:'Cable Car',
+  temp_mild:'Mild Temp',temp_warm:'Warm Temp',temp_hot:'Hot Temp',temp_cold:'Cold Temp',
+};
+
+function wxFromCode(c){
+  if(c===0)return{label:'Clear',emoji:'☀️',type:'sunny'};
+  if(c<=2) return{label:'Partly Cloudy',emoji:'⛅',type:'cloudy'};
+  if(c<=3) return{label:'Overcast',emoji:'☁️',type:'cloudy'};
+  if(c<=49)return{label:'Foggy',emoji:'🌫️',type:'cloudy'};
+  if(c<=67)return{label:'Rainy',emoji:'🌧️',type:'rainy'};
+  if(c<=82)return{label:'Showers',emoji:'🌦️',type:'rainy'};
+  return      {label:'Stormy',emoji:'⛈️',type:'rainy'};
+}
+
+let fcData={date:'',isSat:false,isSun:false,isHoliday:false,holidayName:'',isSchoolBreak:false,weather:null};
+
+async function fcInit(){
+  const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const y=tomorrow.getFullYear(), m=String(tomorrow.getMonth()+1).padStart(2,'0'), d=String(tomorrow.getDate()).padStart(2,'0');
+  fcData.date=`${y}-${m}-${d}`;
+  fcData.isSat=tomorrow.getDay()===6;
+  fcData.isSun=tomorrow.getDay()===0;
+
+  // Date display
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('fcDateVal').textContent=`${DAYS[tomorrow.getDay()]}, ${MONS[tomorrow.getMonth()]} ${tomorrow.getDate()}, ${y}`;
+
+  // Holiday
+  fcData.holidayName=HOLIDAYS[fcData.date]||'';
+  fcData.isHoliday=!!fcData.holidayName;
+  const td=new Date(fcData.date);
+  fcData.isSchoolBreak=SCHOOL_BREAKS.some(([s,e])=>td>=new Date(s)&&td<=new Date(e));
+
+  const badge=document.getElementById('fcHolidayBadge');
+  if(fcData.holidayName) badge.textContent='🎉 '+fcData.holidayName;
+  else if(fcData.isSchoolBreak) badge.textContent='🏫 School Break Week';
+  else if(!fcData.isSat&&!fcData.isSun){badge.textContent='⚠️ No rides tomorrow (weekday)';badge.style.color='var(--smoke)';}
+
+  // Build time slots first (no temp yet)
+  fcBuildSlots();
+  // Fetch weather
+  await fcFetchWeather();
+}
+
+async function fcFetchWeather(){
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,precipitation_probability,weather_code&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=2`;
+    const res=await fetch(url); const data=await res.json();
+    // Tomorrow = indices 24–47
+    fcData.weather={
+      times:data.hourly.time.slice(24,48),
+      temps:data.hourly.temperature_2m.slice(24,48),
+      precip:data.hourly.precipitation_probability.slice(24,48),
+      codes:data.hourly.weather_code.slice(24,48),
+    };
+    // Op hours summary (10am–2pm)
+    const op=fcData.weather.times.map((t,i)=>{const h=new Date(t).getHours();return h>=10&&h<=14?i:-1;}).filter(i=>i>=0);
+    const avgT=Math.round(op.reduce((s,i)=>s+fcData.weather.temps[i],0)/op.length);
+    const avgP=Math.round(op.reduce((s,i)=>s+fcData.weather.precip[i],0)/op.length);
+    const midWx=wxFromCode(fcData.weather.codes[op[Math.floor(op.length/2)]]);
+    document.getElementById('fcWeatherPanel').innerHTML=`
+      <div class="fc-wx-item"><span class="fc-wx-icon">${midWx.emoji}</span><div class="fc-wx-label">Conditions</div><div class="fc-wx-val">${midWx.label}</div></div>
+      <div class="fc-wx-item"><span class="fc-wx-icon">🌡️</span><div class="fc-wx-label">Temp (op hours)</div><div class="fc-wx-val">${avgT}°F</div></div>
+      <div class="fc-wx-item"><span class="fc-wx-icon">☔</span><div class="fc-wx-label">Rain Chance</div><div class="fc-wx-val">${avgP}%</div></div>`;
+    // Update slot temps
+    fcUpdateSlotTemps();
+  }catch(e){
+    document.getElementById('fcWeatherPanel').innerHTML=`<span style="font-size:13px;color:var(--smoke);">⚠️ Weather unavailable — using seasonal averages</span>`;
   }
+}
 
-  function vcUpdateTemp() {
-    const month = parseInt(document.getElementById('vcMonth').value);
-    const avg   = POWAY_AVG_TEMP[month] || 75;
-    document.getElementById('vcTemp').value = avg;
-    vcUpdateTempDisplay();
+function fcBuildSlots(){
+  const buckets=fcData.isSat?BUCKETS_SAT:BUCKETS_SUN;
+  const grid=document.getElementById('fcTimeGrid');
+  if(!fcData.isSat&&!fcData.isSun){
+    grid.innerHTML=`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--smoke);padding:8px;">⚠️ No rides on weekdays</div>`;
+    return;
   }
+  grid.innerHTML=buckets.map((b,i)=>`
+    <label class="fc-time-btn">
+      <input type="radio" name="fcSlot" value="${i}" ${i===1?'checked':''}>
+      <span class="fc-time-label">${b.label}</span>
+      <span class="fc-time-temp" id="fcST-${i}">—°F</span>
+      <span class="fc-time-busy ${b.peak>=0.95?'busy-peak':b.peak>=0.75?'busy-mid':'busy-low'}" id="fcSB-${i}">
+        ${b.peak>=0.95?'⬤ Peak':b.peak>=0.75?'⬤ Busy':'⬤ Calm'}
+      </span>
+    </label>`).join('');
+}
 
-  function vcUpdateTempDisplay() {
-    const t   = parseInt(document.getElementById('vcTemp').value);
-    document.getElementById('vcTempDisplay').textContent = t + '°F';
-    let desc;
-    if (t < 55)      desc = '🥶 Cold — few visitors expected';
-    else if (t < 65) desc = '🧥 Cool — below average turnout';
-    else if (t < 78) desc = '😊 Mild — ideal conditions';
-    else if (t < 85) desc = '😎 Warm — good attendance';
-    else if (t < 92) desc = '🥵 Hot — some may stay home';
-    else             desc = '🔥 Very hot — reduced turnout';
-    document.getElementById('vcTempDesc').textContent = desc;
-  }
+function fcUpdateSlotTemps(){
+  if(!fcData.weather) return;
+  const buckets=fcData.isSat?BUCKETS_SAT:BUCKETS_SUN;
+  buckets.forEach((b,i)=>{
+    const el=document.getElementById(`fcST-${i}`); if(!el) return;
+    const idx=fcData.weather.times.findIndex(t=>new Date(t).getHours()===b.start);
+    if(idx>=0) el.textContent=Math.round(fcData.weather.temps[idx])+'°F';
+  });
+}
 
-  async function vcPredict() {
-    const btn     = document.getElementById('vcBtn');
-    const errorEl = document.getElementById('vcError');
-    errorEl.style.display = 'none';
+async function fcPredict(){
+  const btn=document.getElementById('fcBtn'), errEl=document.getElementById('fcError');
+  errEl.style.display='none';
+  const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const month=tomorrow.getMonth()+1, dom=tomorrow.getDate();
+  const isSat=fcData.isSat;
+  const hasEvent=document.getElementById('evFestival').checked
+               ||document.getElementById('evHalloween').checked
+               ||document.getElementById('evEaster').checked
+               ||document.getElementById('evThomas').checked;
 
-    const month        = parseInt(document.getElementById('vcMonth').value);
-    const day          = parseInt(document.getElementById('vcDay').value) || 15;
-    const isSaturday   = document.querySelector('input[name="vcDayType"]:checked').value === 'saturday';
-    const isHoliday    = document.getElementById('vcHoliday').checked;
-    const isSchoolBreak= document.getElementById('vcSchoolBreak').checked;
-    const hasEvent     = document.getElementById('vcEvent').checked;
-    const weather      = document.querySelector('input[name="vcWeather"]:checked').value;
-    const trainType    = isSaturday ? 'steam' : document.querySelector('input[name="vcTrain"]:checked').value;
-    const temperature  = parseInt(document.getElementById('vcTemp').value);
+  const slotIdx=parseInt(document.querySelector('input[name="fcSlot"]:checked')?.value||1);
+  const buckets=isSat?BUCKETS_SAT:BUCKETS_SUN;
+  const bucket=buckets[slotIdx]||buckets[0];
 
-    btn.disabled    = true;
-    btn.textContent = '⏳ Forecasting...';
-
-    try {
-      const res = await fetch(`${BACKEND}/api/visitor/predict`, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          month, day_of_month: day, is_saturday: isSaturday,
-          is_holiday: isHoliday, is_school_break: isSchoolBreak,
-          has_event: hasEvent, weather, train_type: trainType, temperature
-        })
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      showResult(data, isSaturday, weather, isHoliday, isSchoolBreak, hasEvent, temperature);
-    } catch (err) {
-      errorEl.textContent   = '⚠️ Could not reach backend. Make sure the server is running on localhost:8587.';
-      errorEl.style.display = 'block';
-    } finally {
-      btn.disabled    = false;
-      btn.textContent = '📈 Forecast Visitors';
+  let weather='sunny', temperature=75, wxEmoji='☀️', wxLabel='Clear';
+  if(fcData.weather){
+    const idx=fcData.weather.times.findIndex(t=>new Date(t).getHours()===bucket.start);
+    if(idx>=0){
+      temperature=Math.round(fcData.weather.temps[idx]);
+      const wx=wxFromCode(fcData.weather.codes[idx]);
+      weather=wx.type; wxEmoji=wx.emoji; wxLabel=wx.label;
     }
   }
 
-  function showResult(data, isSat, weather, isHoliday, isSchoolBreak, hasEvent, temp) {
-    const visitors = data.predicted_visitors;
-    const capacity = data.capacity;
-    const occPct   = data.occupancy_pct;
-    const weights  = data.feature_weights;
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  try{
+    const res=await fetch(`${BACKEND}/api/visitor/predict`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({month,day_of_month:dom,is_saturday:isSat,
+        is_holiday:fcData.isHoliday,is_school_break:fcData.isSchoolBreak,
+        has_event:hasEvent,weather,train_type:isSat?'steam':'cable',temperature})
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    showResult(data,bucket,weather,wxEmoji,wxLabel,temperature,hasEvent,isSat,buckets);
+  }catch(e){
+    errEl.textContent='⚠️ Could not reach backend. Make sure the server is running on localhost:8587.';
+    errEl.style.display='block';
+  }finally{btn.disabled=false;btn.textContent='📈 Generate Forecast';}
+}
 
-    document.getElementById('vcNum').textContent    = visitors.toLocaleString();
-    document.getElementById('vcBigSub').textContent = `out of ${capacity.toLocaleString()} total capacity`;
+function showResult(data,bucket,weather,wxEmoji,wxLabel,temp,hasEvent,isSat,buckets){
+  const base=data.predicted_visitors;
+  const visitors=Math.round(base*bucket.peak);
+  const cap=data.capacity;
+  const occ=Math.min(98,Math.round(visitors/cap*100));
+  const weights=data.feature_weights;
 
-    // Factor badges
-    const factors = [];
-    if (weather === 'sunny')          factors.push({label:'☀️ Sunny',    type:'positive'});
-    else if (weather === 'rainy')     factors.push({label:'🌧️ Rainy',   type:'negative'});
-    else if (weather === 'windy')     factors.push({label:'💨 Windy',    type:'negative'});
-    else                              factors.push({label:'⛅ Cloudy',   type:'neutral'});
-    if (temp < 60)                    factors.push({label:'🥶 Cold',     type:'negative'});
-    else if (temp >= 78 && temp < 88) factors.push({label:'😎 Warm',    type:'positive'});
-    else if (temp >= 88)              factors.push({label:'🔥 Hot',      type:'negative'});
-    else                              factors.push({label:'😊 Mild',     type:'positive'});
-    if (isHoliday)                    factors.push({label:'🎉 Holiday',  type:'positive'});
-    if (isSchoolBreak)                factors.push({label:'🏫 School Break',type:'positive'});
-    if (hasEvent)                     factors.push({label:'🎪 Special Event',type:'positive'});
-    if (isSat)                        factors.push({label:'🚂 Steam Day',type:'positive'});
+  document.getElementById('fcBigTime').textContent='During '+bucket.label;
+  document.getElementById('fcBigNum').textContent=visitors.toLocaleString();
+  const barColor=occ>=65?'#ef4444':occ>=40?'#f59e0b':'#4caf82';
+  document.getElementById('fcCrowdFill').style.background=barColor;
+  document.getElementById('fcCrowdPct').textContent=occ+'% capacity';
+  document.getElementById('fcCrowdPct').style.color=barColor;
+  setTimeout(()=>{document.getElementById('fcCrowdFill').style.width=occ+'%';},50);
 
-    document.getElementById('vcFactors').innerHTML = factors.map(f =>
-      `<span class="vc-factor ${f.type}">${f.label}</span>`).join('');
+  // Factors
+  const facts=[];
+  facts.push({label:wxEmoji+' '+wxLabel,type:weather==='sunny'?'pos':weather==='rainy'?'neg':'neu'});
+  if(temp<60)facts.push({label:'🥶 Cold',type:'neg'});
+  else if(temp<78)facts.push({label:'😊 Mild',type:'pos'});
+  else if(temp<88)facts.push({label:'😎 Warm',type:'pos'});
+  else facts.push({label:'🔥 Hot',type:'neg'});
+  if(fcData.isHoliday)facts.push({label:'🎉 '+fcData.holidayName,type:'pos'});
+  if(fcData.isSchoolBreak)facts.push({label:'🏫 School Break',type:'pos'});
+  if(hasEvent)facts.push({label:'🎪 Special Event',type:'pos'});
+  facts.push({label:'⏰ '+bucket.label,type:bucket.peak>=0.95?'neg':'neu'});
+  document.getElementById('fcFactors').innerHTML=facts.map(f=>`<span class="fc-factor ${f.type}">${f.label}</span>`).join('');
 
-    // Occupancy bar
-    const barColor = occPct >= 70 ? '#ef4444' : occPct >= 45 ? '#f59e0b' : '#4caf82';
-    document.getElementById('vcOccPct').textContent       = occPct + '%';
-    document.getElementById('vcOccPct').style.color       = barColor;
-    document.getElementById('vcOccBar').style.background  = barColor;
-    setTimeout(() => { document.getElementById('vcOccBar').style.width = Math.min(occPct,100) + '%'; }, 50);
+  // Tip
+  const tipEl=document.getElementById('fcTip');
+  if(occ>=65){tipEl.className='fc-tip busy';tipEl.innerHTML=`<strong>🔥 Very Busy!</strong> Expect full rides and waits. Arrive 15–20 min early. Book your ride online before heading out.`;}
+  else if(occ>=40){tipEl.className='fc-tip mod';tipEl.innerHTML=`<strong>👍 Moderate Crowd.</strong> Good attendance expected — most time slots accessible with short waits.`;}
+  else{tipEl.className='fc-tip quiet';tipEl.innerHTML=`<strong>✅ Relaxed Day.</strong> Walk-on rides likely available. ${weather==='rainy'?'Rain may keep crowds away — bring a jacket!':'Enjoy the open air and easy boarding!'}`;}
 
-    // Tip
-    let tip = '';
-    if (occPct >= 75)      tip = `<strong>🔥 Very Busy!</strong> Expect long lines. Arrive early and consider booking in advance.`;
-    else if (occPct >= 50) tip = `<strong>👍 Moderate Crowd.</strong> A typical busy weekend — most rides accessible with short waits.`;
-    else if (occPct >= 30) tip = `<strong>✅ Normal Day.</strong> Comfortable crowd, good availability across all ride times.`;
-    else                   tip = `<strong>🌿 Quiet Day.</strong> Great time for a relaxed visit — walk-on rides likely available.`;
-    document.getElementById('vcTip').innerHTML = tip;
+  // Hourly breakdown
+  const maxV=Math.max(...buckets.map(b=>Math.round(base*b.peak)));
+  document.getElementById('fcHourly').innerHTML=buckets.map(b=>{
+    const v=Math.round(base*b.peak);
+    const barW=Math.round(v/maxV*100);
+    const color=b.peak>=0.95?'#ef4444':b.peak>=0.75?'#f59e0b':'#4caf82';
+    const crowd=b.peak>=0.95?'Peak':b.peak>=0.75?'Busy':'Calm';
+    const isActive=b.label===bucket.label;
+    let tStr='';
+    if(fcData.weather){const idx=fcData.weather.times.findIndex(t=>new Date(t).getHours()===b.start);if(idx>=0)tStr=Math.round(fcData.weather.temps[idx])+'°F';}
+    return`<div class="fc-hour-row ${isActive?'fc-active-hour':''}">
+      <div class="fc-hour-time">${b.label}</div>
+      <div class="fc-hour-bar-bg"><div class="fc-hour-bar" style="width:0%;background:${color};" data-w="${barW}">
+        <span class="fc-hour-txt">${v} visitors · ${crowd}</span></div></div>
+      <div class="fc-hour-temp">${tStr}</div></div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.fc-hour-bar').forEach(b=>{b.style.width=b.dataset.w+'%';});},100);
 
-    // Feature weights — top 8
-    if (weights) {
-      const sorted = Object.entries(weights).sort((a,b)=>b[1]-a[1]).slice(0,8);
-      const max    = sorted[0]?.[1] || 1;
-      document.getElementById('vcWeights').innerHTML = sorted.map(([f,imp]) => `
-        <div class="vc-wrow">
-          <div class="vc-wname">${FEATURE_NAMES[f]||f}</div>
-          <div class="vc-wbar-wrap"><div class="vc-wbar" style="width:${Math.round(imp/max*100)}%"></div></div>
-          <div class="vc-wpct">${Math.round(imp*100)}%</div>
-        </div>`).join('');
-    }
-
-    document.getElementById('vcPlaceholder').style.display = 'none';
-    document.getElementById('vcResult').classList.add('show');
+  // Feature weights
+  if(weights){
+    const sorted=Object.entries(weights).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max=sorted[0]?.[1]||1;
+    document.getElementById('fcWeights').innerHTML=sorted.map(([f,imp])=>`
+      <div class="fc-wr"><div class="fc-wn">${FEAT_NAMES[f]||f}</div>
+      <div class="fc-wb-bg"><div class="fc-wb" style="width:${Math.round(imp/max*100)}%"></div></div>
+      <div class="fc-wp">${Math.round(imp*100)}%</div></div>`).join('');
   }
 
-  // Init
-  vcUpdateTempDisplay();
-</script> 
+  document.getElementById('fcResult').classList.add('show');
+  setTimeout(()=>{document.getElementById('fcResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
+fcInit();
+</script>
