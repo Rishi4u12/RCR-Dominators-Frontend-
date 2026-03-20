@@ -5,9 +5,6 @@ permalink: /railroad/home
 ---
 
 <style>
-  /* Hide Minima default header on this page */
-  header.site-header { display: none !important; }
-
   :root {
     --rust:    #b94a1c;
     --ember:   #e8621a;
@@ -331,6 +328,7 @@ permalink: /railroad/home
         <span>🕐</span> Saturdays & Select Sundays · 10am – 2pm
       </p>
     </div>
+    <a href="https://powaymidlandrr.org" target="_blank" class="rr-btn-primary">Visit Official Site →</a>
   </div>
 
 </div>
