@@ -30,6 +30,7 @@ permalink: /railroad/home
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-top: 56px;
   }
 
   /* ── NAV ── */
@@ -330,7 +331,6 @@ permalink: /railroad/home
         <span>🕐</span> Saturdays & Select Sundays · 10am – 2pm
       </p>
     </div>
-    <a href="https://powaymidlandrr.org" target="_blank" class="rr-btn-primary">Visit Official Site →</a>
   </div>
 
 </div>
