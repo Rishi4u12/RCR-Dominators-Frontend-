@@ -250,7 +250,7 @@ permalink: /railroad/home
   <h1 class="rr-hero-title">Poway–Midland<br><em>Railroad</em></h1>
   <p class="rr-hero-sub">Your digital depot for steam, steel, and stories. Explore vintage locomotives, real-time schedules, and the volunteers who keep the iron horse alive every weekend in Poway, CA.</p>
   <div class="rr-hero-btns">
-    <a href="/railroad/schedule" class="rr-btn-primary">🎟 Book a Ride</a>
+    <a href="/railroad/calendar" class="rr-btn-primary">🎟 Book a Ride</a>
     <a href="/railroad/trains" class="rr-btn-secondary">🚂 Our Fleet</a>
   </div>
   <div class="rr-hero-track"></div>
@@ -261,12 +261,12 @@ permalink: /railroad/home
   <!-- Quick links -->
   <div class="rr-section-title">Quick Access</div>
   <div class="rr-quick">
-    <a href="/railroad/schedule" class="rr-quick-card">
+    <a href="/railroad/calendar" class="rr-quick-card">
       <span class="rr-quick-icon">📅</span>
       <div class="rr-quick-label">Schedule</div>
       <div class="rr-quick-sub">View today's rides</div>
     </a>
-    <a href="/railroad/book" class="rr-quick-card">
+    <a href="/railroad/calendar" class="rr-quick-card">
       <span class="rr-quick-icon">🎟</span>
       <div class="rr-quick-label">Book a Ride</div>
       <div class="rr-quick-sub">Reserve your seat</div>
@@ -290,6 +290,16 @@ permalink: /railroad/home
       <span class="rr-quick-icon">🤖</span>
       <div class="rr-quick-label">Safety Predictor</div>
       <div class="rr-quick-sub">ML powered</div>
+    </a>
+    <a href="#" class="rr-quick-card">
+      <span class="rr-quick-icon">🎪</span>
+      <div class="rr-quick-label">Events</div>
+      <div class="rr-quick-sub">Upcoming activities</div>
+    </a>
+    <a href="#" class="rr-quick-card">
+      <span class="rr-quick-icon">🎥</span>
+      <div class="rr-quick-label">Live Camera</div>
+      <div class="rr-quick-sub">Watch the park live</div>
     </a>
   </div>
 
