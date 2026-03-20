@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poway Midland - Updates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/live-train-shared.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Main navigation">
+    <div class="top-nav-inner">
+      <div class="brand">Poway Midland Experience Lab</div>
+      <div class="nav-links">
+        <a class="nav-link" href="./live-train-tracker.html">Home</a>
+        <a class="nav-link" href="./live-train-auth.html">Auth</a>
+        <a class="nav-link" href="./live-train-explorer.html">Explorer</a>
+        <a class="nav-link" href="./live-train-contact.html">Contact</a>
+        <a class="nav-link" href="./live-train-updates.html">Updates</a>
+        <a class="nav-link" href="./live-train-ai.html">AI Assistant</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <header class="hero">
+      <h1>Dynamic Announcements and Services</h1>
+      <p>Search and filter operational updates and event support announcements.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="dynamic-title">
+      <h2 id="dynamic-title">Updates Feed</h2>
+      <div class="grid-2">
+        <div class="content-card">
+          <div class="form-row">
+            <label for="search-updates">Search Updates</label>
+            <input id="search-updates" type="search" placeholder="Search by title or keyword" />
+          </div>
+          <div class="form-row">
+            <label for="filter-category">Filter Category</label>
+            <select id="filter-category">
+              <option value="all">All Categories</option>
+            </select>
+          </div>
+          <p class="small-note" id="updates-status" aria-live="polite">Loading updates...</p>
+        </div>
+
+        <div class="content-card">
+          <h3>Latest Updates</h3>
+          <div class="content-list" id="updates-list" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const fallbackUpdates = [
+      {
+        id: 1,
+        title: "Spring Family Ride Window Expanded",
+        category: "events",
+        date: "2026-03-12",
+        summary: "Saturday rides now run until 4:30 PM during spring programming weeks."
+      },
+      {
+        id: 2,
+        title: "Volunteer Engineer Orientation",
+        category: "volunteer",
+        date: "2026-03-08",
+        summary: "New volunteer orientation includes dispatch basics, safety checks, and guest operations."
+      },
+      {
+        id: 3,
+        title: "Group Booking Support Added",
+        category: "service",
+        date: "2026-02-27",
+        summary: "School and community groups can request planning support through the online form."
+      },
+      {
+        id: 4,
+        title: "Track Maintenance Complete",
+        category: "operations",
+        date: "2026-02-15",
+        summary: "Routine maintenance improved ride smoothness and reduced dwell time at turnaround point."
+      }
+    ];
+
+    const updatesListEl = document.getElementById("updates-list");
+    const updatesStatusEl = document.getElementById("updates-status");
+    const searchUpdatesEl = document.getElementById("search-updates");
+    const filterCategoryEl = document.getElementById("filter-category");
+
+    let updatesStore = [];
+
+    function renderUpdatesList(items) {
+      updatesListEl.innerHTML = "";
+
+      if (!items.length) {
+        updatesListEl.innerHTML = '<div class="announcement">No results match your current search/filter.</div>';
+        return;
+      }
+
+      items.forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "announcement";
+        article.innerHTML = `
+          <div class="announcement-title">${item.title}</div>
+          <div class="announcement-meta">${item.category.toUpperCase()} | ${item.date}</div>
+          <p>${item.summary}</p>
+        `;
+        updatesListEl.appendChild(article);
+      });
+    }
+
+    function renderCategoryOptions(items) {
+      const categories = [...new Set(items.map((item) => item.category))];
+      categories.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category[0].toUpperCase() + category.slice(1);
+        filterCategoryEl.appendChild(option);
+      });
+    }
+
+    function applyUpdateFilters() {
+      const query = searchUpdatesEl.value.trim().toLowerCase();
+      const category = filterCategoryEl.value;
+
+      const filtered = updatesStore.filter((item) => {
+        const matchesQuery = !query || `${item.title} ${item.summary}`.toLowerCase().includes(query);
+        const matchesCategory = category === "all" || item.category === category;
+        return matchesQuery && matchesCategory;
+      });
+
+      updatesStatusEl.textContent = `${filtered.length} item(s) shown`;
+      renderUpdatesList(filtered);
+    }
+
+    async function loadAnnouncements() {
+      updatesStatusEl.textContent = "Loading updates...";
+      try {
+        const response = await fetch("./assets/data/updates.json");
+        if (!response.ok) {
+          throw new Error("Failed to fetch updates");
+        }
+        const data = await response.json();
+        updatesStore = Array.isArray(data) ? data : fallbackUpdates;
+      } catch (error) {
+        updatesStore = fallbackUpdates;
+      }
+
+      renderCategoryOptions(updatesStore);
+      applyUpdateFilters();
+
+      searchUpdatesEl.addEventListener("input", applyUpdateFilters);
+      filterCategoryEl.addEventListener("change", applyUpdateFilters);
+    }
+
+    loadAnnouncements();
+  </script>
+</body>
+</html>

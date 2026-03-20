@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poway Midland - AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/live-train-shared.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Main navigation">
+    <div class="top-nav-inner">
+      <div class="brand">Poway Midland Experience Lab</div>
+      <div class="nav-links">
+        <a class="nav-link" href="./live-train-tracker.html">Home</a>
+        <a class="nav-link" href="./live-train-auth.html">Auth</a>
+        <a class="nav-link" href="./live-train-explorer.html">Explorer</a>
+        <a class="nav-link" href="./live-train-contact.html">Contact</a>
+        <a class="nav-link" href="./live-train-updates.html">Updates</a>
+        <a class="nav-link" href="./live-train-ai.html">AI Assistant</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <header class="hero">
+      <h1>AI Recommendations and Engagement Insights</h1>
+      <p>Use the assistant to generate visit plans and inspect prototype usage insights.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="ai-title">
+      <h2 id="ai-title">Visitor Assistant and Insights</h2>
+      <div class="grid-2">
+        <div class="ai-card">
+          <h3>Visitor Assistant</h3>
+          <div class="chat-window" id="chat-window" aria-live="polite"></div>
+          <div class="form-row">
+            <label for="ai-input">Ask for a recommendation</label>
+            <textarea id="ai-input" rows="3" placeholder="Example: Suggest a 45-minute family visit plan"></textarea>
+          </div>
+          <div class="nav-links">
+            <button class="primary-btn" id="send-ai" type="button">Get Recommendation</button>
+            <button class="secondary-btn" id="clear-ai" type="button">Clear Chat</button>
+          </div>
+        </div>
+
+        <div class="ai-card">
+          <h3>ML-style Summary Table</h3>
+          <p class="small-note">Prototype metrics to show insights in demo mode.</p>
+          <table class="results-table" aria-label="Engagement insight summary table">
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Usage</th>
+                <th scope="col">Insight</th>
+              </tr>
+            </thead>
+            <tbody id="insight-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const engagementInsights = [
+      { feature: "Panorama Viewer", usage: "78%", insight: "Highest interaction on mobile users after hero scroll" },
+      { feature: "Route Map", usage: "64%", insight: "Users click turnaround marker to understand route length" },
+      { feature: "History Timeline", usage: "57%", insight: "Timeline cards help retention in presentation mode" },
+      { feature: "AI Assistant", usage: "49%", insight: "Most prompts request family plans and visit duration" }
+    ];
+
+    const chatWindowEl = document.getElementById("chat-window");
+    const aiInputEl = document.getElementById("ai-input");
+    const sendAiEl = document.getElementById("send-ai");
+    const clearAiEl = document.getElementById("clear-ai");
+    const insightTableBodyEl = document.getElementById("insight-table-body");
+
+    function addChatMessage(role, text) {
+      const message = document.createElement("div");
+      message.className = `chat-message ${role}`;
+      message.textContent = text;
+      chatWindowEl.appendChild(message);
+      chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+    }
+
+    function buildAiReply(prompt) {
+      const lowerPrompt = prompt.toLowerCase();
+      if (lowerPrompt.includes("family") || lowerPrompt.includes("kids")) {
+        return "Recommendation: Start with the route map, ride the train before noon, and finish with the photo timeline for a 45-minute family visit.";
+      }
+      if (lowerPrompt.includes("history") || lowerPrompt.includes("learn")) {
+        return "Recommendation: Begin with hotspots 1 and 2, then open timeline cards from 1995 and 1996 for a focused history walkthrough.";
+      }
+      if (lowerPrompt.includes("volunteer") || lowerPrompt.includes("help")) {
+        return "Recommendation: Use the contact form with subject 'Volunteer Opportunities' and mention your preferred weekend availability.";
+      }
+      return "Recommendation: Explore panoramas first, then route map markers, and end with announcements to check upcoming events and support options.";
+    }
+
+    function renderInsightTable() {
+      insightTableBodyEl.innerHTML = "";
+      engagementInsights.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.feature}</td>
+          <td>${row.usage}</td>
+          <td>${row.insight}</td>
+        `;
+        insightTableBodyEl.appendChild(tr);
+      });
+    }
+
+    sendAiEl.addEventListener("click", () => {
+      const prompt = aiInputEl.value.trim();
+      if (!prompt) {
+        return;
+      }
+      addChatMessage("user", prompt);
+      addChatMessage("assistant", buildAiReply(prompt));
+      aiInputEl.value = "";
+    });
+
+    clearAiEl.addEventListener("click", () => {
+      chatWindowEl.innerHTML = "";
+      addChatMessage("assistant", "Chat reset. Ask a new question to get recommendations.");
+    });
+
+    addChatMessage("assistant", "Hello. Ask for visit ideas, family plans, or volunteer recommendations.");
+    renderInsightTable();
+  </script>
+</body>
+</html>

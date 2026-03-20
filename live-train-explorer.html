@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poway Midland - Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/live-train-shared.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Main navigation">
+    <div class="top-nav-inner">
+      <div class="brand">Poway Midland Experience Lab</div>
+      <div class="nav-links">
+        <a class="nav-link" href="./live-train-tracker.html">Home</a>
+        <a class="nav-link" href="./live-train-auth.html">Auth</a>
+        <a class="nav-link" href="./live-train-explorer.html">Explorer</a>
+        <a class="nav-link" href="./live-train-contact.html">Contact</a>
+        <a class="nav-link" href="./live-train-updates.html">Updates</a>
+        <a class="nav-link" href="./live-train-ai.html">AI Assistant</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <header class="hero">
+      <h1>Panorama, Route Map, Hotspots, and Timeline</h1>
+      <p>Explore visual and historical content in one focused explorer page.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="panorama-title">
+      <h2 id="panorama-title">1. 360 Panoramic Views</h2>
+      <p>Drag with your mouse or finger to look around each scene.</p>
+      <div class="pano-controls" id="pano-controls" aria-label="Panorama scenes"></div>
+      <div id="panorama" aria-label="Poway Midland panorama viewer"></div>
+      <p class="small-note">Tip: Replace sample panorama URLs with your own 360 images captured at the station.</p>
+    </section>
+
+    <section class="panel split" aria-labelledby="map-title">
+      <div>
+        <h2 id="map-title">2. Interactive Route Map Through Old Poway Park</h2>
+        <div id="route-map" aria-label="Train route through Old Poway Park"></div>
+      </div>
+      <aside class="map-details">
+        <h3>Route Highlights</h3>
+        <ul class="map-list" id="stops-list"></ul>
+        <h3>Historic Markers</h3>
+        <ul class="map-list" id="poi-list"></ul>
+      </aside>
+    </section>
+
+    <section class="panel" aria-labelledby="hotspot-title">
+      <h2 id="hotspot-title">3. Clickable Train History Hotspots</h2>
+      <p>Select a marker to reveal facts and trivia.</p>
+      <div class="hotspot-stage" id="hotspot-stage" aria-label="Train and station hotspot area">
+        <div class="hotspot-track" aria-hidden="true"></div>
+        <div class="hotspot-locomotive" aria-hidden="true"></div>
+      </div>
+      <div class="hotspot-popup" id="hotspot-popup" aria-live="polite">
+        <h3 id="hotspot-heading">Steam Locomotive History</h3>
+        <p id="hotspot-text">Click any hotspot marker to learn about the Poway Midland Railroad.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="timeline-title">
+      <h2 id="timeline-title">4. Historical Photo Gallery and Timeline</h2>
+      <p>Scroll through milestones and select a card to enlarge the image and read details.</p>
+      <div class="timeline-track" id="timeline-track"></div>
+    </section>
+  </main>
+
+  <dialog id="history-modal" aria-labelledby="modal-year">
+    <div class="modal-content">
+      <img id="modal-image" class="modal-image" alt="Expanded historical photo" />
+      <h3 id="modal-year"></h3>
+      <p id="modal-caption"></p>
+      <button class="btn-close" id="close-modal" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <script>
+    const panoramaScenes = [
+      {
+        id: "steam-locomotive",
+        title: "Steam Locomotive",
+        panorama: "https://pannellum.org/images/alma.jpg"
+      },
+      {
+        id: "train-cars",
+        title: "Train Cars",
+        panorama: "https://pannellum.org/images/bma-1.jpg"
+      },
+      {
+        id: "station-platform",
+        title: "Station Platform",
+        panorama: "https://pannellum.org/images/cerro-toco-0.jpg"
+      },
+      {
+        id: "park-tracks",
+        title: "Tracks Through Park",
+        panorama: "https://pannellum.org/images/jfk.jpg"
+      }
+    ];
+
+    const fallbackRouteData = {
+      route: [
+        { lat: 32.9623, lng: -117.0352 },
+        { lat: 32.9625, lng: -117.0350 },
+        { lat: 32.9627, lng: -117.0348 },
+        { lat: 32.9629, lng: -117.0346 },
+        { lat: 32.9630, lng: -117.0349 },
+        { lat: 32.9628, lng: -117.0351 },
+        { lat: 32.9626, lng: -117.0353 }
+      ],
+      stops: [
+        { name: "Poway Midland Station", lat: 32.9623, lng: -117.0352, type: "start" },
+        { name: "Turnaround Point", lat: 32.9630, lng: -117.0349, type: "turnaround" },
+        { name: "Platform Return", lat: 32.9626, lng: -117.0353, type: "stop" }
+      ],
+      pointsOfInterest: [
+        { name: "Heritage Platform", lat: 32.96245, lng: -117.03505 },
+        { name: "Historic Rail Segment", lat: 32.96282, lng: -117.03477 }
+      ]
+    };
+
+    const hotspotFacts = [
+      {
+        id: "h1",
+        title: "Steam Locomotive",
+        text: "The Poway Midland Railroad opened in 1996 and is run by volunteers who maintain and operate the miniature train for public rides.",
+        left: "44%",
+        top: "56%"
+      },
+      {
+        id: "h2",
+        title: "Railroad Origins",
+        text: "Planning began in 1995, and by 1996 the railroad welcomed riders at Old Poway Park.",
+        left: "18%",
+        top: "69%"
+      },
+      {
+        id: "h3",
+        title: "Volunteer Engineers",
+        text: "Volunteer engineers and conductors operate rides and keep equipment in safe, working order for visitors.",
+        left: "72%",
+        top: "61%"
+      },
+      {
+        id: "h4",
+        title: "Miniature Railroad Design",
+        text: "Miniature railroads mirror full-size systems using scaled track, rolling stock, dispatch routines, and station operations.",
+        left: "58%",
+        top: "34%"
+      }
+    ];
+
+    const timelineEvents = [
+      {
+        year: "1995",
+        event: "Railroad planning begins",
+        caption: "Early planning outlined route alignment, station access, and volunteer support for operations.",
+        color: "#efb366",
+        image: "./assets/images/history/1995-planning.svg"
+      },
+      {
+        year: "1996",
+        event: "First train rides offered",
+        caption: "Public rides started and quickly became a popular weekend attraction in Old Poway Park.",
+        color: "#d97c52",
+        image: "./assets/images/history/1996-first-rides.svg"
+      },
+      {
+        year: "2005",
+        event: "Track improvements",
+        caption: "Maintenance and upgrades improved reliability, smoother rides, and expanded event support.",
+        color: "#679ac8",
+        image: "./assets/images/history/2005-track-upgrades.svg"
+      },
+      {
+        year: "Today",
+        event: "Community weekend rides",
+        caption: "The railroad continues to host families and visitors while sharing local railroad history.",
+        color: "#6fa46f",
+        image: "./assets/images/history/present-weekend-rides.svg"
+      }
+    ];
+
+    const panoControlsEl = document.getElementById("pano-controls");
+    const stopsListEl = document.getElementById("stops-list");
+    const poiListEl = document.getElementById("poi-list");
+    const hotspotStageEl = document.getElementById("hotspot-stage");
+    const hotspotHeadingEl = document.getElementById("hotspot-heading");
+    const hotspotTextEl = document.getElementById("hotspot-text");
+    const timelineTrackEl = document.getElementById("timeline-track");
+    const historyModalEl = document.getElementById("history-modal");
+    const modalImageEl = document.getElementById("modal-image");
+    const modalYearEl = document.getElementById("modal-year");
+    const modalCaptionEl = document.getElementById("modal-caption");
+    const closeModalEl = document.getElementById("close-modal");
+
+    const panoramaConfig = {
+      default: {
+        firstScene: panoramaScenes[0].id,
+        autoLoad: true,
+        showZoomCtrl: true,
+        sceneFadeDuration: 750
+      },
+      scenes: panoramaScenes.reduce((acc, scene) => {
+        acc[scene.id] = {
+          title: scene.title,
+          type: "equirectangular",
+          panorama: scene.panorama
+        };
+        return acc;
+      }, {})
+    };
+
+    const panoramaViewer = pannellum.viewer("panorama", panoramaConfig);
+
+    function renderPanoramaControls() {
+      panoramaScenes.forEach((scene, index) => {
+        const button = document.createElement("button");
+        button.className = "scene-btn";
+        button.type = "button";
+        button.textContent = scene.title;
+        button.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+        button.addEventListener("click", () => {
+          panoramaViewer.loadScene(scene.id);
+          panoControlsEl.querySelectorAll("button").forEach((btn) => btn.setAttribute("aria-pressed", "false"));
+          button.setAttribute("aria-pressed", "true");
+        });
+        panoControlsEl.appendChild(button);
+      });
+    }
+
+    function listMapItems(routeData) {
+      stopsListEl.innerHTML = "";
+      poiListEl.innerHTML = "";
+
+      routeData.stops.forEach((stop) => {
+        const li = document.createElement("li");
+        li.textContent = `${stop.name} (${stop.type})`;
+        stopsListEl.appendChild(li);
+      });
+
+      routeData.pointsOfInterest.forEach((poi) => {
+        const li = document.createElement("li");
+        li.textContent = poi.name;
+        poiListEl.appendChild(li);
+      });
+    }
+
+    function createMap(routeData) {
+      const map = L.map("route-map", {
+        zoomControl: true,
+        scrollWheelZoom: true
+      }).setView([32.9626, -117.035], 18);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      const latLngs = routeData.route.map((point) => [point.lat, point.lng]);
+      const routeLine = L.polyline(latLngs, {
+        color: "#bb3e03",
+        weight: 6,
+        opacity: 0.85
+      }).addTo(map);
+
+      routeData.stops.forEach((stop) => {
+        L.circleMarker([stop.lat, stop.lng], {
+          radius: 8,
+          color: "#20547f",
+          fillColor: stop.type === "start" ? "#f59e0b" : "#66b3ff",
+          fillOpacity: 0.95,
+          weight: 2
+        })
+          .bindPopup(`<b>${stop.name}</b><br/>Type: ${stop.type}`)
+          .addTo(map);
+      });
+
+      routeData.pointsOfInterest.forEach((poi) => {
+        L.marker([poi.lat, poi.lng])
+          .bindPopup(`<b>${poi.name}</b><br/>Historic area`)
+          .addTo(map);
+      });
+
+      map.fitBounds(routeLine.getBounds(), { padding: [20, 20] });
+
+      const trainIcon = L.divIcon({
+        className: "",
+        html: "<span style=\"font-size:1.25rem;\">Train</span>",
+        iconSize: [42, 24],
+        iconAnchor: [21, 12]
+      });
+      const trainMarker = L.marker(latLngs[0], { icon: trainIcon }).addTo(map);
+      let routeIndex = 0;
+
+      setInterval(() => {
+        routeIndex = (routeIndex + 1) % latLngs.length;
+        trainMarker.setLatLng(latLngs[routeIndex]);
+      }, 1800);
+    }
+
+    async function loadRouteData() {
+      try {
+        const response = await fetch("./assets/data/poway-midland-route.json");
+        if (!response.ok) {
+          throw new Error("Route data request failed");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        return fallbackRouteData;
+      }
+    }
+
+    function renderHotspots() {
+      hotspotFacts.forEach((fact, index) => {
+        const button = document.createElement("button");
+        button.className = "hotspot-btn";
+        button.type = "button";
+        button.style.left = fact.left;
+        button.style.top = fact.top;
+        button.setAttribute("aria-label", fact.title);
+        button.textContent = String(index + 1);
+        button.addEventListener("click", () => {
+          hotspotHeadingEl.textContent = fact.title;
+          hotspotTextEl.textContent = fact.text;
+        });
+        hotspotStageEl.appendChild(button);
+      });
+    }
+
+    function buildPhotoCardSvg(eventData) {
+      const label = encodeURIComponent(`${eventData.year} - ${eventData.event}`);
+      const color = encodeURIComponent(eventData.color);
+      return "data:image/svg+xml;utf8," +
+        "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360'>" +
+        "<defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>" +
+        `<stop stop-color='${color}' offset='0'/>` +
+        "<stop stop-color='%23f8f4e8' offset='1'/></linearGradient></defs>" +
+        "<rect width='100%' height='100%' fill='url(%23g)'/>" +
+        "<rect x='24' y='220' width='592' height='100' rx='12' fill='%23ffffffcc'/>" +
+        `<text x='40' y='275' fill='%23203d5a' font-size='30' font-family='Bree Serif, serif'>${label}</text>` +
+        "</svg>";
+    }
+
+    function renderTimeline() {
+      timelineEvents.forEach((entry) => {
+        const fallbackImage = buildPhotoCardSvg(entry);
+        const imageSrc = entry.image || fallbackImage;
+        const card = document.createElement("article");
+        card.className = "timeline-card";
+        card.innerHTML = `
+          <img class="timeline-thumb" src="${imageSrc}" alt="${entry.year} ${entry.event}" />
+          <div class="timeline-meta">
+            <div class="timeline-year">${entry.year}</div>
+            <div class="timeline-event">${entry.event}</div>
+          </div>
+        `;
+
+        const imgEl = card.querySelector("img");
+        if (imgEl) {
+          imgEl.addEventListener("error", () => {
+            imgEl.src = fallbackImage;
+          });
+        }
+
+        card.addEventListener("click", () => {
+          modalImageEl.src = imageSrc;
+          modalImageEl.onerror = () => {
+            modalImageEl.src = fallbackImage;
+          };
+          modalYearEl.textContent = `${entry.year} - ${entry.event}`;
+          modalCaptionEl.textContent = entry.caption;
+          historyModalEl.showModal();
+        });
+
+        timelineTrackEl.appendChild(card);
+      });
+    }
+
+    closeModalEl.addEventListener("click", () => historyModalEl.close());
+    historyModalEl.addEventListener("click", (event) => {
+      const rect = historyModalEl.getBoundingClientRect();
+      const inDialog =
+        rect.top <= event.clientY &&
+        event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.left + rect.width;
+
+      if (!inDialog) {
+        historyModalEl.close();
+      }
+    });
+
+    async function init() {
+      renderPanoramaControls();
+      renderHotspots();
+      renderTimeline();
+      const routeData = await loadRouteData();
+      listMapItems(routeData);
+      createMap(routeData);
+    }
+
+    init();
+  </script>
+</body>
+</html>
