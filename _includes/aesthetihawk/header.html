@@ -27,9 +27,7 @@
             margin-bottom: 0; float: left; font-weight: bold;
         }
         .site-title, .site-title:visited { color: white; text-decoration: none; }
-        .site-nav {
-            position: absolute; top: 0; right: 15px;
-        }
+        .site-nav { position: absolute; top: 0; right: 15px; }
         @media screen and (min-width: 1000px) {
             .site-nav { position: static; float: right; border: none; background-color: inherit; }
         }
@@ -38,11 +36,11 @@
         .rr-nav { display: flex; align-items: center; flex-wrap: nowrap; }
         .rr-item { position: relative; }
         .rr-link {
-            display: flex; align-items: center; gap: 5px;
+            display: flex; align-items: center; gap: 6px;
             color: #e8e0d0 !important; text-decoration: none !important;
             font-family: 'Courier New', monospace;
             font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-            padding: 0 14px; height: 54px; line-height: 54px;
+            padding: 0 22px; height: 54px; line-height: 54px;
             border-bottom: 3px solid transparent;
             transition: all 0.2s; cursor: pointer; white-space: nowrap;
             background: none; border-top: none; border-left: none; border-right: none;
@@ -56,22 +54,22 @@
             border: 1px solid rgba(255,255,255,0.1);
             border-top: 2px solid #b94a1c;
             border-radius: 0 0 8px 8px;
-            min-width: 180px;
+            min-width: 220px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             overflow: hidden; z-index: 200;
         }
         .rr-item.open .rr-drop { display: block; animation: rrIn 0.2s ease; }
         @keyframes rrIn { from{opacity:0;transform:translateY(-4px);} to{opacity:1;transform:none;} }
         .rr-drop a {
-            display: block; padding: 11px 18px;
+            display: block; padding: 12px 20px;
             color: #8c7f6e !important; text-decoration: none !important;
             font-family: 'Courier New', monospace;
             font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-            transition: all 0.15s;
+            transition: all 0.15s; white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .rr-drop a:last-child { border-bottom: none; }
-        .rr-drop a:hover { background: rgba(201,148,58,0.15); color: #c9943a !important; padding-left: 24px; }
+        .rr-drop a:hover { background: rgba(201,148,58,0.15); color: #c9943a !important; padding-left: 26px; }
         @media screen and (max-width: 999px) { .rr-nav { display: none; } }
     </style>
 </head>
@@ -96,12 +94,8 @@
                         </button>
                         <div class="rr-drop">
                             <a href="/railroad/schedule">🚂 Train Schedule</a>
-                            <a href="#">👷 Volunteer</a>
+                            <a href="#">👷 Volunteer Schedule</a>
                         </div>
-                    </div>
-
-                    <div class="rr-item">
-                        <a href="/railroad/notes" class="rr-link">📸 Notes</a>
                     </div>
 
                     <div class="rr-item" id="rrAbout">
@@ -116,10 +110,6 @@
 
                     <div class="rr-item">
                         <a href="#" class="rr-link">🎪 Events</a>
-                    </div>
-
-                    <div class="rr-item">
-                        <a href="#" class="rr-link">🤝 Membership</a>
                     </div>
 
                     <a id="loginArea" href="{{ site.baseurl }}/login" class="rr-link">Login</a>
