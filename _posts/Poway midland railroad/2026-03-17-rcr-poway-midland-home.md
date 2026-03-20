@@ -5,6 +5,9 @@ permalink: /railroad/home
 ---
 
 <style>
+  /* Hide Minima default header on this page */
+  header.site-header { display: none !important; }
+
   :root {
     --rust:    #b94a1c;
     --ember:   #e8621a;
@@ -242,50 +245,6 @@ permalink: /railroad/home
   }
 </style>
 
-<!-- NAV -->
-<nav class="rr-nav" id="rrNav">
-
-  <div class="rr-nav-item">
-    <a href="/railroad/home" class="rr-nav-link active">🏠 Home</a>
-  </div>
-
-  <!-- Schedule dropdown -->
-  <div class="rr-nav-item" id="navSchedule">
-    <button class="rr-nav-link" onclick="toggleNav('navSchedule')">
-      📅 Schedule <span class="arrow">▼</span>
-    </button>
-    <div class="rr-dropdown">
-      <a href="/railroad/schedule">🚂 Train Schedule</a>
-      <a href="#">👷 Volunteer Schedule</a>
-    </div>
-  </div>
-
-  <!-- Notes -->
-  <div class="rr-nav-item">
-    <a href="/railroad/notes" class="rr-nav-link">📸 Notes</a>
-  </div>
-
-  <!-- About Us dropdown -->
-  <div class="rr-nav-item" id="navAbout">
-    <button class="rr-nav-link" onclick="toggleNav('navAbout')">
-      ℹ️ About Us <span class="arrow">▼</span>
-    </button>
-    <div class="rr-dropdown">
-      <a href="/railroad/trains">🚂 Our Trains</a>
-      <a href="#">📖 History</a>
-    </div>
-  </div>
-
-  <div class="rr-nav-item">
-    <a href="#" class="rr-nav-link">🎥 Live Camera</a>
-  </div>
-
-  <div class="rr-nav-item">
-    <a href="#" class="rr-nav-link">🤝 Membership</a>
-  </div>
-
-</nav>
-
 <!-- HERO -->
 <div class="rr-hero">
   <span class="rr-hero-icon">🚂</span>
@@ -328,6 +287,11 @@ permalink: /railroad/home
       <span class="rr-quick-icon">📊</span>
       <div class="rr-quick-label">Visitor Forecast</div>
       <div class="rr-quick-sub">ML prediction</div>
+    </a>
+    <a href="/railroad/titanic" class="rr-quick-card">
+      <span class="rr-quick-icon">🤖</span>
+      <div class="rr-quick-label">Safety Predictor</div>
+      <div class="rr-quick-sub">ML powered</div>
     </a>
   </div>
 
@@ -375,21 +339,3 @@ permalink: /railroad/home
 <div class="rr-footer">
   © 2026 Poway–Midland Railroad · All aboard for a journey through rail heritage
 </div>
-
-<script>
-  function toggleNav(id) {
-    const item = document.getElementById(id);
-    const isOpen = item.classList.contains('open');
-    // Close all dropdowns first
-    document.querySelectorAll('.rr-nav-item.open').forEach(el => el.classList.remove('open'));
-    // Toggle clicked one
-    if (!isOpen) item.classList.add('open');
-  }
-
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.rr-nav-item')) {
-      document.querySelectorAll('.rr-nav-item.open').forEach(el => el.classList.remove('open'));
-    }
-  });
-</script>
