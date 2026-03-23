@@ -3,38 +3,34 @@
     <style>
         .site-header {
             backdrop-filter: blur(30px);
-            border-top: 0px solid;
             border-bottom: 3px solid #b94a1c;
             background: rgba(26, 20, 16, 0.95);
-            font-weight: bold;
             z-index: 999999999;
-            min-height: 55.95px;
-            line-height: 54px;
             position: fixed;
             width: 100%;
             top: 0px;
+            height: 54px;
         }
-        .site-nav { background-color: transparent; }
-        #loginArea { margin-left: 12px; }
-        .site-header .wrapper { max-width: fit-content !important; }
-        .wrapper {
-            max-width: calc(1000px - 30px);
-            margin-right: auto; margin-left: auto;
-            padding-right: 15px; padding-left: 15px;
+        .site-header .wrapper {
+            max-width: 100% !important;
+            display: flex;
+            align-items: center;
+            height: 54px;
+            padding: 0 16px;
+            gap: 0;
         }
         .site-title {
-            font-size: 1.625rem; letter-spacing: -1px;
-            margin-bottom: 0; float: left; font-weight: bold;
+            display: flex; align-items: center;
+            flex-shrink: 0; margin-right: 0;
+            text-decoration: none; padding: 0 12px 0 0;
+            border-right: 1px solid rgba(255,255,255,0.1);
         }
-        .site-title, .site-title:visited { color: white; text-decoration: none; }
-        .site-nav { position: absolute; top: 0; right: 15px; }
-        @media screen and (min-width: 1000px) {
-            .site-nav { position: static; float: right; border: none; background-color: inherit; }
-        }
+        .site-title:visited { text-decoration: none; }
+        .site-nav { display: flex; align-items: center; height: 54px; }
 
         /* ── Railroad Nav ── */
-        .rr-nav { display: flex; align-items: center; flex-wrap: nowrap; }
-        .rr-item { position: relative; }
+        .rr-nav { display: flex; align-items: center; flex-wrap: nowrap; height: 54px; }
+        .rr-item { position: relative; height: 54px; display: flex; align-items: center; }
         .rr-link {
             display: flex; align-items: center; gap: 6px;
             color: #e8e0d0 !important; text-decoration: none !important;
@@ -49,7 +45,7 @@
         .rr-arr { font-size: 8px; transition: transform 0.2s; }
         .rr-item.open .rr-arr { transform: rotate(180deg); }
         .rr-drop {
-            display: none; position: absolute; top: 100%; left: 0;
+            display: none; position: absolute; top: 54px; left: 0;
             background: rgba(42, 31, 24, 0.98);
             border: 1px solid rgba(255,255,255,0.1);
             border-top: 2px solid #b94a1c;
@@ -70,6 +66,7 @@
         }
         .rr-drop a:last-child { border-bottom: none; }
         .rr-drop a:hover { background: rgba(201,148,58,0.15); color: #c9943a !important; padding-left: 26px; }
+        #loginArea { margin-left: 12px; }
         @media screen and (max-width: 999px) { .rr-nav { display: none; } }
     </style>
 </head>
@@ -78,7 +75,7 @@
     <header class="site-header">
         <div class="wrapper">
             <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
-                <img src="{{ site.baseurl }}/assets/images/PMRR-Logo.png" alt="Poway Midland Railroad" style="height:44px;vertical-align:middle;margin-right:10px;">
+                <img src="{{ site.baseurl }}/assets/images/PMRR-Logo.png" alt="Poway Midland Railroad" style="height:46px;">
             </a>
 
             <nav class="site-nav">
@@ -109,7 +106,7 @@
                     </div>
 
                     <div class="rr-item">
-                        <a href="#" class="rr-link">🎪 Events</a>
+                        <a href="/railroad/events" class="rr-link">🎪 Events</a>
                     </div>
 
                     <a id="loginArea" href="{{ site.baseurl }}/login" class="rr-link">Login</a>

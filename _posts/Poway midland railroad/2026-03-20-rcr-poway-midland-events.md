@@ -1,7 +1,7 @@
 ---
 layout: base
-title: Announcements & Updates
-permalink: /railroad/updates
+title: Events & Announcements
+permalink: /railroad/events
 ---
 
 <style>
@@ -40,7 +40,7 @@ permalink: /railroad/updates
 
 <div class="rr-hero">
   <div class="rr-hero-tag">Latest News · Poway–Midland Railroad</div>
-  <h1>Announcements <em>&amp; Updates</em></h1>
+  <h1>Events <em>&amp; Announcements</em></h1>
   <p>Search and filter operational updates and event announcements.</p>
 </div>
 

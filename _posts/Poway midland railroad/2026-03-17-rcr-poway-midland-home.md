@@ -291,7 +291,7 @@ permalink: /railroad/home
       <div class="rr-quick-label">Safety Predictor</div>
       <div class="rr-quick-sub">ML powered</div>
     </a>
-    <a href="#" class="rr-quick-card">
+    <a href="/railroad/events" class="rr-quick-card">
       <span class="rr-quick-icon">🎪</span>
       <div class="rr-quick-label">Events</div>
       <div class="rr-quick-sub">Upcoming activities</div>
