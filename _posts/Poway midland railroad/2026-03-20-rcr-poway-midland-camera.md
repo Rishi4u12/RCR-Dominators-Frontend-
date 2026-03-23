@@ -1,7 +1,7 @@
 ---
 layout: base
-title: Railroad Explorer
-permalink: /railroad/explorer
+title: Live Camera & Explorer
+permalink: /railroad/camera
 ---
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">

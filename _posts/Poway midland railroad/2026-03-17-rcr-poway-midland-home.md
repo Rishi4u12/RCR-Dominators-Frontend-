@@ -201,8 +201,13 @@ permalink: /railroad/home
   }
 
   /* Quick links */
-  .rr-quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px; margin-bottom: 60px; }
+  .rr-quick {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 60px;
+  }
+  @media (max-width: 900px) { .rr-quick { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .rr-quick { grid-template-columns: 1fr 1fr; } }
   .rr-quick-card {
     background: var(--iron); border: 1px solid rgba(255,255,255,0.07);
     border-radius: 10px; padding: 20px; text-align: center;
@@ -237,11 +242,25 @@ permalink: /railroad/home
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--smoke);
   }
 
-  @media (max-width: 600px) {
-    .rr-nav-link { padding: 14px 12px; font-size: 10px; }
-    .rr-contact { flex-direction: column; }
+  /* Floating AI button */
+  .rr-ai-fab {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--rust), var(--ember));
+    color: #fff; text-decoration: none;
+    padding: 12px 20px 12px 14px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(185,74,28,0.5);
+    font-family: 'Courier New', monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    z-index: 9999;
+    transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.2);
   }
-</style>
+  .rr-ai-fab:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(185,74,28,0.6); }
+  .rr-ai-fab-icon { font-size: 22px; line-height: 1; }
+
 
 <!-- HERO -->
 <div class="rr-hero">
@@ -261,7 +280,7 @@ permalink: /railroad/home
   <!-- Quick links -->
   <div class="rr-section-title">Quick Access</div>
   <div class="rr-quick">
-    <a href="/railroad/calendar" class="rr-quick-card">
+    <a href="/railroad/schedule" class="rr-quick-card">
       <span class="rr-quick-icon">📅</span>
       <div class="rr-quick-label">Schedule</div>
       <div class="rr-quick-sub">View today's rides</div>
@@ -286,20 +305,20 @@ permalink: /railroad/home
       <div class="rr-quick-label">Visitor Forecast</div>
       <div class="rr-quick-sub">ML prediction</div>
     </a>
-    <a href="/railroad/titanic" class="rr-quick-card">
-      <span class="rr-quick-icon">🤖</span>
-      <div class="rr-quick-label">Safety Predictor</div>
-      <div class="rr-quick-sub">ML powered</div>
-    </a>
     <a href="/railroad/events" class="rr-quick-card">
       <span class="rr-quick-icon">🎪</span>
       <div class="rr-quick-label">Events</div>
       <div class="rr-quick-sub">Upcoming activities</div>
     </a>
-    <a href="#" class="rr-quick-card">
+    <a href="/railroad/camera" class="rr-quick-card">
       <span class="rr-quick-icon">🎥</span>
       <div class="rr-quick-label">Live Camera</div>
       <div class="rr-quick-sub">Watch the park live</div>
+    </a>
+    <a href="/railroad/assistant" class="rr-quick-card">
+      <span class="rr-quick-icon">🤖</span>
+      <div class="rr-quick-label">AI Assistant</div>
+      <div class="rr-quick-sub">Visit recommendations</div>
     </a>
   </div>
 
@@ -342,6 +361,12 @@ permalink: /railroad/home
   </div>
 
 </div>
+
+<!-- Floating AI Assistant button -->
+<a href="/railroad/assistant" class="rr-ai-fab">
+  <span class="rr-ai-fab-icon">🤖</span>
+  AI Assistant
+</a>
 
 <!-- FOOTER -->
 <div class="rr-footer">
