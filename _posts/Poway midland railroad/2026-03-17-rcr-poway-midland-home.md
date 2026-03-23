@@ -261,6 +261,11 @@ permalink: /railroad/home
   .rr-ai-fab:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(185,74,28,0.6); }
   .rr-ai-fab-icon { font-size: 22px; line-height: 1; }
 
+  @media (max-width: 600px) {
+    .rr-contact { flex-direction: column; }
+    .rr-ai-fab { bottom: 16px; right: 16px; padding: 10px 16px 10px 12px; font-size: 10px; }
+  }
+</style>
 
 <!-- HERO -->
 <div class="rr-hero">
