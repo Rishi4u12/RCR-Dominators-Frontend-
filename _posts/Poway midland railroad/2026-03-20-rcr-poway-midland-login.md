@@ -128,11 +128,14 @@ permalink: /railroad/login
 
 <script>
 const BACKEND = 'http://localhost:8587';
+const REDIRECT_AFTER_LOGIN   = '/railroad/home';
+const REDIRECT_AFTER_SIGNUP  = '/railroad/home';
 const validateEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
 function setFeedback(el, msg, type) {
   el.textContent = msg; el.className = 'rr-feedback ' + (type==='ok'?'ok':'err');
 }
+
 function updateView(user) {
   const pill = document.getElementById('authPill');
   const txt  = document.getElementById('authStatusText');
@@ -153,7 +156,7 @@ function updateView(user) {
 
 async function checkStatus() {
   try {
-    const res = await fetch(`${BACKEND}/api/auth/status`);
+    const res = await fetch(`${BACKEND}/api/auth/status`, { credentials: 'include' });
     const data = await res.json();
     updateView(data.logged_in ? data : null);
   } catch { updateView(null); }
@@ -164,14 +167,24 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value.trim();
   const fb    = document.getElementById('loginFeedback');
-  if (!validateEmail(email)||pass.length<6) { setFeedback(fb,'Enter a valid email and password (min 6 chars).','err'); return; }
+  if (!validateEmail(email) || pass.length < 6) {
+    setFeedback(fb, 'Enter a valid email and password (min 6 chars).', 'err'); return;
+  }
   try {
-    const res  = await fetch(`${BACKEND}/api/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, password:pass}) });
+    const res  = await fetch(`${BACKEND}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password: pass })
+    });
     const data = await res.json();
     if (!res.ok) { setFeedback(fb, data.error || 'Login failed.', 'err'); return; }
-    setFeedback(fb, `Welcome back, ${data.name}! 🚂`, 'ok');
+    setFeedback(fb, `Welcome back, ${data.name}! 🚂 Redirecting...`, 'ok');
     updateView(data);
-  } catch { setFeedback(fb, 'Could not reach server. Make sure backend is running.', 'err'); }
+    setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 1000);
+  } catch {
+    setFeedback(fb, 'Could not reach server. Make sure backend is running.', 'err');
+  }
 });
 
 document.getElementById('signupForm').addEventListener('submit', async e => {
@@ -180,18 +193,30 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
   const email = document.getElementById('signupEmail').value.trim();
   const pass  = document.getElementById('signupPass').value.trim();
   const fb    = document.getElementById('signupFeedback');
-  if (name.length<2||!validateEmail(email)||pass.length<6) { setFeedback(fb,'Check name, email, and password requirements.','err'); return; }
+  if (name.length < 2 || !validateEmail(email) || pass.length < 6) {
+    setFeedback(fb, 'Check name, email, and password requirements.', 'err'); return;
+  }
   try {
-    const res  = await fetch(`${BACKEND}/api/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, email, password:pass}) });
+    const res  = await fetch(`${BACKEND}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ name, email, password: pass })
+    });
     const data = await res.json();
     if (!res.ok) { setFeedback(fb, data.error || 'Registration failed.', 'err'); return; }
-    setFeedback(fb, `Account created! Welcome aboard, ${data.name}! 🚂`, 'ok');
+    setFeedback(fb, `Account created! Welcome aboard, ${data.name}! 🚂 Redirecting...`, 'ok');
     updateView(data);
-  } catch { setFeedback(fb, 'Could not reach server. Make sure backend is running.', 'err'); }
+    setTimeout(() => { window.location.href = REDIRECT_AFTER_SIGNUP; }, 1000);
+  } catch {
+    setFeedback(fb, 'Could not reach server. Make sure backend is running.', 'err');
+  }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-  try { await fetch(`${BACKEND}/api/auth/logout`, { method:'POST' }); } catch {}
+  try {
+    await fetch(`${BACKEND}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+  } catch {}
   document.getElementById('loginForm').reset();
   document.getElementById('signupForm').reset();
   setFeedback(document.getElementById('loginFeedback'), 'Logged out successfully.', 'ok');
