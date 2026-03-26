@@ -81,15 +81,15 @@ permalink: /railroad/home
   .rail-steel.right { bottom: 9px; }
   /* Train wrapper — starts off-screen left, moves right */
   .train-wrapper {
-    position: absolute; bottom: 22px; left: -900px;
+    position: absolute; bottom: 22px; left: 0;
     display: flex; align-items: flex-end; gap: 0;
     z-index: 20;
     animation: trainLTR 22s linear infinite;
     filter: drop-shadow(2px 4px 10px rgba(0,0,0,0.6));
   }
   @keyframes trainLTR {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(calc(100vw + 1000px)); }
+    0%   { transform: translateX(-900px); }
+    100% { transform: translateX(calc(100vw + 100px)); }
   }
   /* Locomotive */
   .locomotive {
@@ -441,7 +441,6 @@ permalink: /railroad/home
     <a href="/railroad/forecast" class="rr-quick-card"><span class="rr-quick-icon">📊</span><div class="rr-quick-label">Visitor Forecast</div><div class="rr-quick-sub">ML prediction</div></a>
     <a href="/railroad/events"   class="rr-quick-card"><span class="rr-quick-icon">🎪</span><div class="rr-quick-label">Events</div><div class="rr-quick-sub">Upcoming activities</div></a>
     <a href="/railroad/camera"   class="rr-quick-card"><span class="rr-quick-icon">🎥</span><div class="rr-quick-label">Live Camera</div><div class="rr-quick-sub">Watch the park live</div></a>
-    <a href="/railroad/assistant" class="rr-quick-card"><span class="rr-quick-icon">🤖</span><div class="rr-quick-label">AI Assistant</div><div class="rr-quick-sub">Visit recommendations</div></a>
   </div>
 
   <div class="rr-section-title">Latest News from the Line</div>
